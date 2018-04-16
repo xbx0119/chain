@@ -9,7 +9,9 @@ const config = {
 
     // 已知的节点列表
     peers: {
-        list: []
+        list: [
+            
+        ]
     },
     
     // 图形界面端口和地址

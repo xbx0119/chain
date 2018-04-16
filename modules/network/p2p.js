@@ -10,11 +10,7 @@ const MulticastDNS = require('libp2p-mdns');
 
 const KadDHT = require('libp2p-kad-dht');
 
-
-const bootstrapers = [
-    '/ip4/172.16.138.1/tcp/36203/ipfs/Qme13hqSb34KbfdPytpYXe3ufP8kG6emJRgjnnzFmPKHzY'
-];
-
+const config = require('../../config');
 
 class P2P extends Libp2p {
     constructor(peerinfo) {
@@ -25,7 +21,7 @@ class P2P extends Libp2p {
                 crypto: [SECIO]
             },
             discovery: [
-                new Railing(),
+                new Railing(config.peers.list),
                 new MulticastDNS(peerinfo, {interval: 1000})
             ],
             DHT: KadDHT
