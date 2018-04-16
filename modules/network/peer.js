@@ -86,7 +86,40 @@ class Peer {
                     (peerInfo, cb) => {
                         peerInfo.multiaddrs.add(`/ip4/${config.address}/tcp/${config.port}`)
                         node = new p2p(peerInfo)
-                        node.start(cb)
+                        node.start(cb);
+
+                        node.on('peer:discovery', (peer) => {
+                            console.log("discovery: ", peer.id.toB58String())
+                            node.dial(peer, (err, conn) => {
+                                console.log("dial")
+                            })
+                        });
+
+                        node.on('peer:connect', (peer) => {
+                            console.log("connection established to: ", peer.id.toB58String())
+
+                            setInterval(() => {
+                                node.dialProtocol(peer, '/news', (err, conn) => {
+                                    if (err) { throw err; }
+                                    pull(
+                                        pull.values(['this is a dial']),
+                                        conn
+                                    )
+                                    console.log("dialprotocol")
+                                })
+                            }, 3000)
+
+
+                        })
+
+                        node.handle('/news', (protocol, conn) => {
+                            pull(
+                                conn,
+                                pull.map((m) => m.toString()),
+                                pull.log()
+                            )
+                        })
+
                     }
                 ], (err) => this.print(err, node))
 
