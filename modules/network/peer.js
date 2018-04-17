@@ -91,6 +91,11 @@ class Peer {
 
                         node.on('peer:discovery', (peer) => {
                             console.log("discovery: ", peer.id.toB58String())
+
+                            console.log(node.stats.peers())
+
+                            // node.dht.put(peer.id.toBytes(), value, () => {})
+
                             node.dial(peer, (err, conn) => {
                                 console.log("dial")
                             })
