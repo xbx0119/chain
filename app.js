@@ -1,4 +1,12 @@
 const network = require('./modules/network');
 
 
-network.start();
+const app = {
+
+    start: function() {
+        network.start();
+    }
+
+}
+
+module.exports = app;
