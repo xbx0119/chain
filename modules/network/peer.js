@@ -97,12 +97,19 @@ class Peer {
 
                         node.on('peer:connect', (peer) => {
                             console.log("connection established to: ", peer.id.toB58String())
-
-
                             console.log(node.stats.peers())
-                            node.dht.put(peer.id.toBytes(), Buffer.from(JSON.stringify(peer)), () => { })
 
-                            
+
+                            // setTimeout(() => {
+                            //     // 从数据库随机查询节点发送消息
+                            //     node.peerRouting.findPeer(PeerId.createFromB58String('Qmd3jJYEc5o4DK9paSKN4nEeJEwRtshZY5eZ4b148VDHjD'), (err, peer) => {
+                            //         if (err) { throw err }
+
+                            //         console.log('Found it, multiaddrs are:')
+                            //         peer.multiaddrs.forEach((ma) => console.log(ma.toString()))
+                                    
+                            //     }) 
+                            // }, 1000);
 
                             setInterval(() => {
                                 node.dialProtocol(peer, '/news', (err, conn) => {
