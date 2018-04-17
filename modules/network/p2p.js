@@ -8,7 +8,7 @@ const SECIO = require('libp2p-secio');
 const Railing = require('libp2p-railing');
 const MulticastDNS = require('libp2p-mdns');
 
-const KadDHT = require('libp2p-kad-dht');
+const DHT = require('libp2p-kad-dht');
 
 const config = require('../../config');
 
@@ -24,7 +24,7 @@ class P2P extends Libp2p {
                 new Railing(config.peers.list),
                 new MulticastDNS(peerinfo, {interval: 1000})
             ],
-            DHT: KadDHT
+            dht: DHT
         }
         super(modules, peerinfo);
     }

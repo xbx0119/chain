@@ -110,8 +110,10 @@ class Peer {
                                 })
                             }, 3000)
 
-
+                            // console.log(node.stats.peers())
                         })
+
+                        
 
                         node.handle('/news', (protocol, conn) => {
                             pull(
