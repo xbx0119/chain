@@ -10,7 +10,7 @@ const config = {
     // 已知的节点列表
     peers: {
         list: [
-            
+            '/ip4/207.148.98.165/tcp/9999/ipfs/QmYMvCTT9bhx2xqKsQFfURTXEEnGnZ6rUVdGdJ7fj8eCqv'
         ]
     },
     

@@ -1,6 +1,7 @@
 const p2p = require('./p2p');
 const PeerInfo = require('peer-info');
 const PeerId = require('peer-id');
+const pull = require('pull-stream');
 const waterfall = require('async/waterfall');
 const crypto = require('libp2p-crypto');
 const jwkToPem = require('jwk-to-pem');
