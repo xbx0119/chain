@@ -92,14 +92,17 @@ class Peer {
                         node.on('peer:discovery', (peer) => {
                             console.log("discovery: ", peer.id.toB58String())
 
-                            console.log(node.stats.peers())
-                            node.dht.put(peer.id.toBytes(), Buffer.from(JSON.stringify(peer)), () => {})
-
                             node.dial(peer, (err, conn) => { })
                         });
 
                         node.on('peer:connect', (peer) => {
                             console.log("connection established to: ", peer.id.toB58String())
+
+
+                            console.log(node.stats.peers())
+                            node.dht.put(peer.id.toBytes(), Buffer.from(JSON.stringify(peer)), () => { })
+
+                            
 
                             setInterval(() => {
                                 node.dialProtocol(peer, '/news', (err, conn) => {
