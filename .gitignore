@@ -1,0 +1,8 @@
+node_modules/
+
+logs/
+
+
+config/chain_rsa
+config/chain_rsa.pub
+config/config.user.js
