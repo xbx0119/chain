@@ -93,8 +93,7 @@ class Peer {
                             console.log("discovery: ", peer.id.toB58String())
 
                             console.log(node.stats.peers())
-
-                            // node.dht.put(peer.id.toBytes(), value, () => {})
+                            node.dht.put(peer.id.toBytes(), Buffer.from(JSON.stringify(peer)), () => {})
 
                             node.dial(peer, (err, conn) => { })
                         });
