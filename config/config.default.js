@@ -9,9 +9,7 @@ const config = {
 
     // 已知的节点列表
     peers: {
-        list: [
-            '/ip4/207.148.98.165/tcp/9999/ipfs/QmYMvCTT9bhx2xqKsQFfURTXEEnGnZ6rUVdGdJ7fj8eCqv'
-        ]
+        list: []
     },
     
     // 图形界面端口和地址
@@ -19,8 +17,8 @@ const config = {
     ui_address: "127.0.0.1",
 
     rsaBits: 2048,
-    rsaPrivateKey_path: path.join(__dirname, './bin/', 'chain_rsa'),
-    rsaPublicKey_path: path.join(__dirname, './bin/', 'chain_rsa.pub')
+    rsaPrivateKey_path: path.join(__dirname, 'chain_rsa'),
+    rsaPublicKey_path: path.join(__dirname, 'chain_rsa.pub')
 }
 
 module.exports = config;
