@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node app.js",
+    "dev": "node ./bin/chain",
     "prod": "pm2 start ./pm2.config.json",
     "stop": "pm2 stop ./pm2.config.json"
   },
