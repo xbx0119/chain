@@ -22,7 +22,7 @@ class P2P extends Libp2p {
             },
             discovery: [
                 new Railing(config.peers.list),
-                new MulticastDNS(peerinfo, {interval: 1000})
+                // new MulticastDNS(peerinfo, {interval: 1000})
             ],
             DHT: KadDHT
         }

@@ -13,31 +13,27 @@ const config = require('../../config');
 
 class Peer {
     constructor() {
-        if (!this.hasKey()) {
-            this.genKey(() => {
-                console.log("two")
-                this.create();
+        if (!this.__hasKey()) {
+            this.__genKey(() => {
+                this.start();
             });
         }else {
-            this.create();
+            this.start();
         }
     }
 
     /**
-     * 检查是否存在公钥和私钥
-     * 不存在返回false，生成一个
-     * 存在返回true，使用现有的
+     * 检查是否存在公钥和私钥，不存在返回false，生成一个；存在返回true，使用现有的
      */
-    hasKey() {
+    __hasKey() {
         return fs.existsSync(config.rsaPrivateKey_path);
     }
 
     /**
      * 生成公钥、私钥，写入pem文件
      */
-    genKey(callback) { 
+    __genKey(callback) { 
         console.log("generate KeyPair");
-        console.log("-----------------------------------");
         crypto.keys.generateKeyPair('RSA', config.rsaBits, (err, keys) => {
             if(err) { throw err; }
             // 打印私钥对象RsaPrivateKey
@@ -56,7 +52,7 @@ class Peer {
         })
     }
 
-    print(err, node) {
+    __print(err, node) {
         if (err) { throw err }
 
         console.log("node has started (true/false): " + node.isStarted());
@@ -64,18 +60,12 @@ class Peer {
         node.peerInfo.multiaddrs.forEach((addr) => { console.log(addr.toString()) })
     }
 
-    create() {
+    start() {
         let node;
-
         const privatePem = fs.readFileSync(config.rsaPrivateKey_path).toString();
-
-        console.log("\n-------------------");
-        console.log(privatePem);
-        console.log("-------------------\n");
 
         crypto.keys.import(privatePem, '', (err, privKey) => {
             if(err) { throw err; }
-            console.log(privKey)
 
             privKey.public.hash((err, digest) => {
                 if(err) { throw err; }
@@ -89,64 +79,81 @@ class Peer {
                         node = new p2p(peerInfo)
                         node.start(cb);
 
-                        node.on('peer:discovery', (peer) => {
-                            console.log("discovery: ", peer.id.toB58String())
+                        this.registDiscover(node);
+                        this.registEvent(node);
 
-                            node.dial(peer, (err, conn) => { })
-                        });
-
-                        node.on('peer:connect', (peer) => {
-                            console.log("connection established to: ", peer.id.toB58String())
-                            console.log(node.stats.peers())
-
-
-                            // setTimeout(() => {
-                            //     // 从数据库随机查询节点发送消息
-                            //     node.peerRouting.findPeer(PeerId.createFromB58String('Qmd3jJYEc5o4DK9paSKN4nEeJEwRtshZY5eZ4b148VDHjD'), (err, peer) => {
-                            //         if (err) { throw err }
-
-                            //         console.log('Found it, multiaddrs are:')
-                            //         peer.multiaddrs.forEach((ma) => console.log(ma.toString()))
-                                    
-                            //     }) 
-                            // }, 1000);
-
-                            setInterval(() => {
-                                node.dialProtocol(peer, '/news', (err, conn) => {
-                                    if (err) { throw err; }
-                                    try {
-                                        pull(
-                                            pull.values([`from ${config.name}: this is a dialProtocol news `]),
-                                            conn
-                                        )
-                                    } catch (err) {
-                                        console.log(err)
-                                    }
-                                })
-                            }, 3000)
-
-                            // console.log(node.stats.peers())
-                        })
-
-                        
-
-                        node.handle('/news', (protocol, conn) => {
-                            pull(
-                                conn,
-                                pull.map((m) => m.toString()),
-                                pull.log()
-                            )
-                        })
-
+                        this.registProtocol(node, '/news');
                     }
-                ], (err) => this.print(err, node))
-
+                ], (err) => this.__print(err, node))
             })
-            
-        })
-
-       
+        }) 
     }
+
+    registDiscover(node) {
+        node.on('peer:discovery', (peer) => {
+            console.log("discovery: ", peer.id.toB58String())
+            node.dial(peer, (err, conn) => { })
+        });
+
+        node.on('peer:connect', (peer) => {
+            console.log("connection established to: ", peer.id.toB58String())
+            console.log(node.stats.peers())
+        })
+    }
+
+    registReceiveType(node, protocol) {
+        node.handle(protocol, (protocol, conn) => {
+            this.getData(protocol, conn);
+        })
+    }
+
+    registSendType(node) {  
+        /* 
+            setTimeout(() => {
+                // 从数据库随机查询节点发送消息
+                node.peerRouting.findPeer(PeerId.createFromB58String('Qmd3jJYEc5o4DK9paSKN4nEeJEwRtshZY5eZ4b148VDHjD'), (err, peer) => {
+                    if (err) { throw err }
+                    
+                    console.log('Found it, multiaddrs are:')
+                    peer.multiaddrs.forEach((ma) => console.log(ma.toString()))
+                    
+                }) 
+            }, 1000);
+        */
+
+        node.dialProtocol(peer, '/news', (err, conn) => {
+            if (err) { throw err; }
+            this.sendData(conn);
+        })
+    }
+
+    getData(protocol, conn) {
+        try {
+            pull(
+                conn,
+                pull.map((m) => m.toString()),
+                pull.log()
+            )
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    sendData(conn) {
+        try {
+            pull(
+                pull.values([`from ${config.name}: this is a dialProtocol news `]),
+                conn
+            )
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+
+    
+
+
 }
 
 module.exports = Peer;
