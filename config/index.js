@@ -13,7 +13,7 @@ if (fs.existsSync(path.join(__dirname, './config.user.js'))) {
 let config = {};
 Object.assign(config, configDefault, configUser);
 
-console.log(config)
+console.log(JSON.stringify(config))
 
 
 module.exports = config;

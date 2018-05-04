@@ -1,3 +1,7 @@
+
+
+
+
 class Block {
     constructor() {
         this.data = this.produce();
@@ -20,6 +24,12 @@ class Block {
             //区块主体，包含所有交易信息，即账本
             records: this.__records()
         }
+    }
+
+    // 存储区块到数据库
+    store() {
+        // some code
+        console.log("store block to database");
     }
 
 

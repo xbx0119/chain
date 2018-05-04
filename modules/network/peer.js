@@ -13,21 +13,18 @@ const config = require('../../config');
 
 class Peer {
     constructor() {
+        this.node = null;
         if (!this.__hasKey()) {
             this.__genKey();
         }
     }
 
-    /**
-     * 检查是否存在公钥和私钥，不存在返回false，生成一个；存在返回true，使用现有的
-     */
+    // 检查是否存在公钥和私钥，不存在返回false，生成一个；存在返回true，使用现有的
     __hasKey() {
         return fs.existsSync(config.rsaPrivateKey_path);
     }
 
-    /**
-     * 生成公钥、私钥，写入pem文件
-     */
+    // 生成公钥、私钥，写入pem文件
     __genKey() { 
         console.log("generate KeyPair");
         crypto.keys.generateKeyPair('RSA', config.rsaBits, (err, keys) => {
@@ -46,16 +43,16 @@ class Peer {
         })
     }
 
-    __print(err, node) {
+    __print(err) {
         if (err) { throw err }
 
-        console.log("node has started (true/false): " + node.isStarted());
+        console.log("node has started (true/false): " + this.node.isStarted());
         console.log("listened on: ");
-        node.peerInfo.multiaddrs.forEach((addr) => { console.log(addr.toString()) })
+        this.node.peerInfo.multiaddrs.forEach((addr) => { console.log(addr.toString()) })
     }
 
-    start() {
-        let node;
+    start(callback) {
+        // let node;
         const privatePem = fs.readFileSync(config.rsaPrivateKey_path).toString();
 
         crypto.keys.import(privatePem, '', (err, privKey) => {
@@ -70,40 +67,44 @@ class Peer {
                     (cb) => PeerInfo.create(id, cb),
                     (peerInfo, cb) => {
                         peerInfo.multiaddrs.add(`/ip4/${config.address}/tcp/${config.port}`)
-                        node = new p2p(peerInfo)
-                        node.start(cb);
+                        this.node = new p2p(peerInfo)
+                        this.node.start(cb);
 
-                        this.registDiscover(node);
+                        this.registDiscover();
                         
-                        this.registReceiveType(node, '/record');
-                        this.registReceiveType(node, '/block');
+                        this.registReceiveType('/record');
+                        this.registReceiveType('/block');
 
-                        // this.emitSend(node, '/record');
+                        // this.emitSend(peer, '/record');
+                        callback()
                     }
-                ], (err) => this.__print(err, node))
+                ], (err) => this.__print(err))
             })
         }) 
     }
 
-    registDiscover(node) {
-        node.on('peer:discovery', (peer) => {
+    registDiscover() {
+        this.node.on('peer:discovery', (peer) => {
             console.log("discovery: ", peer.id.toB58String())
-            node.dial(peer, (err, conn) => { })
+            // 连接节点
+            this.node.dial(peer, (err, conn) => { })
+            this.emitSend(peer, '/record');
         });
 
-        node.on('peer:connect', (peer) => {
+        this.node.on('peer:connect', (peer) => {
             console.log("connection established to: ", peer.id.toB58String())
-            console.log(node.stats.peers())
+            // 打印连接的节点列表
+            console.log(this.node.stats.peers())
         })
     }
 
-    registReceiveType(node, protocol) {
-        node.handle(protocol, (protocol, conn) => {
+    registReceiveType(protocol) {
+        this.node.handle(protocol, (protocol, conn) => {
             this.getData(protocol, conn);
         })
     }
 
-    emitSend(node, protocol) {  
+    emitSend(peer, protocol) {  
         /* 
             setTimeout(() => {
                 // 从数据库随机查询节点发送消息
@@ -117,7 +118,7 @@ class Peer {
             }, 1000);
         */
 
-        node.dialProtocol(peer, protocol, (err, conn) => {
+        this.node.dialProtocol(peer, protocol, (err, conn) => {
             if (err) { throw err; }
 
             const data = 'test';

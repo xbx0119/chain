@@ -16,6 +16,7 @@ class Record {
         }
     }
 
+
     __version() {
         return 'test';
     }
