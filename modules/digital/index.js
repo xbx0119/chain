@@ -8,13 +8,16 @@ const Network = require('../network');
 
 
 const digital = {
+    Block: null,
+    Record: null,
+
     start: () => {
-        this.Block = new Block();
-        this.Record = new Record();
+        digital.Block = new Block();
+        digital.Record = new Record();
         if(config.name != 'vultr') {
             setInterval(() => {
 
-                Network.interface.emitDataFromDigital('record', this.Record.produce())
+                Network.interface.emitDataFromDigital('record', digital.Record.produce())
 
             }, 5000);
         }
