@@ -14,11 +14,7 @@ const config = require('../../config');
 class Peer {
     constructor() {
         if (!this.__hasKey()) {
-            this.__genKey(() => {
-                this.start();
-            });
-        }else {
-            this.start();
+            this.__genKey();
         }
     }
 
@@ -32,7 +28,7 @@ class Peer {
     /**
      * 生成公钥、私钥，写入pem文件
      */
-    __genKey(callback) { 
+    __genKey() { 
         console.log("generate KeyPair");
         crypto.keys.generateKeyPair('RSA', config.rsaBits, (err, keys) => {
             if(err) { throw err; }
@@ -47,8 +43,6 @@ class Peer {
 
             fs.writeFileSync(config.rsaPrivateKey_path, privatePem);
             fs.writeFileSync(config.rsaPublicKey_path, publicPem);
-
-            callback();
         })
     }
 
@@ -80,9 +74,11 @@ class Peer {
                         node.start(cb);
 
                         this.registDiscover(node);
-                        this.registEvent(node);
+                        
+                        this.registReceiveType(node, '/record');
+                        this.registReceiveType(node, '/block');
 
-                        this.registProtocol(node, '/news');
+                        // this.emitSend(node, '/record');
                     }
                 ], (err) => this.__print(err, node))
             })
@@ -107,7 +103,7 @@ class Peer {
         })
     }
 
-    registSendType(node) {  
+    emitSend(node, protocol) {  
         /* 
             setTimeout(() => {
                 // 从数据库随机查询节点发送消息
@@ -121,9 +117,11 @@ class Peer {
             }, 1000);
         */
 
-        node.dialProtocol(peer, '/news', (err, conn) => {
+        node.dialProtocol(peer, protocol, (err, conn) => {
             if (err) { throw err; }
-            this.sendData(conn);
+
+            const data = 'test';
+            this.sendData(data, conn);
         })
     }
 
@@ -139,20 +137,16 @@ class Peer {
         }
     }
 
-    sendData(conn) {
+    sendData(data, conn) {
         try {
             pull(
-                pull.values([`from ${config.name}: this is a dialProtocol news `]),
+                pull.values([`from ${config.name}: this is a dialProtocol news, ${data} `]),
                 conn
             )
         } catch (err) {
             console.log(err)
         }
     }
-
-
-    
-
 
 }
 

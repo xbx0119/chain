@@ -1,6 +1,6 @@
 class Block {
     constructor() {
-        this.block = this.produce();
+        this.data = this.produce();
     }
 
     produce() {
@@ -51,7 +51,6 @@ class Block {
         return [];    
     }
 
-
-
-
 }
+
+module.exports = Block;

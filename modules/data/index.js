@@ -1,4 +1,6 @@
 // import data modules
+const Block = require('./block');
+const record = require('./record');
 
 
 const data = {
@@ -9,10 +11,10 @@ const data = {
 
     interface: {
         // 对上层 网络层 提供的接口
-        upper: {
-            input: function() {
-                console.log("上层向数据层输入数据")
-            }
+
+        // 从网络层向下流动数据，即接受网络层的数据
+        flowDataFromNet: function(data) {
+            console.log("flowDataFromNet")
         }
     }
 }
