@@ -150,7 +150,7 @@ class Peer {
                 pull.drain(function(data) {
                     console.log(data)
 
-                    Digital.flowDataFromNet(protocol, data);
+                    Digital.interface.flowDataFromNet(protocol, data);
 
                 })
             )
