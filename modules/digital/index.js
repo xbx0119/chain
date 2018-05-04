@@ -28,7 +28,7 @@ const digital = {
         flowDataFromNet: function(type, data) {
             console.log("flowDataFromNet")
 
-            switch (data) {
+            switch (type) {
                 case 'record':
                     console.log("flowDataFromNet: |--  type: %s, data: %s", type, data);
                     
