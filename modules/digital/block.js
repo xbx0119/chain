@@ -1,10 +1,7 @@
 
-
-
-
 class Block {
     constructor() {
-        this.data = this.produce();
+        
     }
 
     produce() {

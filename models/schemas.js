@@ -5,7 +5,8 @@ var Schema = mongoose.Schema;
 
 // 节点
 var peersSchema = new Schema({
-    
+    peerid: String,
+    multiaddr: String
 });
 exports.peersSchema = peersSchema;
 

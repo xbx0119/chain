@@ -1,11 +1,23 @@
 // import digital modules
 const Block = require('./block');
-const record = require('./record');
+const Record = require('./record');
+
+const config = require('../../config');
+
+const Network = require('../network');
 
 
 const digital = {
     start: () => {
+        this.Block = new Block();
+        this.Record = new Record();
+        if(config.name != 'vultr') {
+            setInterval(() => {
 
+                Network.interface.emitDataFromDigital('record', this.Record.produce())
+
+            }, 5000);
+        }
         console.log("1. 数据层已启动");
     },
 

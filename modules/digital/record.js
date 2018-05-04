@@ -1,6 +1,7 @@
+
 class Record {
     constructor() {
-        this.data = this.produce();
+        
     }
 
     produce() {

@@ -10,6 +10,8 @@ const fs = require('fs');
 
 const config = require('../../config');
 
+const peersModel = require('../../models/peersModel');
+
 
 class Peer {
     constructor() {
@@ -75,7 +77,6 @@ class Peer {
                         this.registReceiveType('/record');
                         this.registReceiveType('/block');
 
-                        // this.emitSend(peer, '/record');
                         callback()
                     }
                 ], (err) => this.__print(err))
@@ -87,8 +88,25 @@ class Peer {
         this.node.on('peer:discovery', (peer) => {
             console.log("discovery: ", peer.id.toB58String())
             // 连接节点
-            this.node.dial(peer, (err, conn) => { })
-            this.emitSend(peer, '/record');
+            this.node.dial(peer, (err, conn) => { 
+                if(err) {
+                    console.log("节点不通");
+                }else {
+                    this.__addPeer(peer)
+                }
+            })
+            
+
+            // this.emitSend('/record', {
+            //     "version": 0,
+            //     "timestamp": Date.now(),
+            //     "recipientId": "0",
+            //     "senderId": "1",
+            //     "senderPublicKey": "1",
+            //     "hash": "1", 
+            //     "message": "i send b a seed", 
+            //     "signature": "0", 
+            // });
         });
 
         this.node.on('peer:connect', (peer) => {
@@ -104,25 +122,21 @@ class Peer {
         })
     }
 
-    emitSend(peer, protocol) {  
-        /* 
-            setTimeout(() => {
-                // 从数据库随机查询节点发送消息
-                node.peerRouting.findPeer(PeerId.createFromB58String('Qmd3jJYEc5o4DK9paSKN4nEeJEwRtshZY5eZ4b148VDHjD'), (err, peer) => {
-                    if (err) { throw err }
-                    
-                    console.log('Found it, multiaddrs are:')
-                    peer.multiaddrs.forEach((ma) => console.log(ma.toString()))
-                    
-                }) 
-            }, 1000);
-        */
-
-        this.node.dialProtocol(peer, protocol, (err, conn) => {
-            if (err) { throw err; }
-
-            const data = 'test';
-            this.sendData(data, conn);
+    async emitSend(protocol, data) {  
+        console.log("emitSend: |-- type: %s, data: %s", protocol, data)
+        // 从数据库中获取peer发送数据
+        let peers = await peersModel.getAllPeers();
+        
+        peers.forEach((peer) => {
+            this.node.dialProtocol(peer.multiaddr, protocol, (err, conn) => {
+                if (err) { 
+                    // 拨号不通，节点异常，数据库删除节点
+                    const res = peersModel.removePeer(peer.peerid);
+                    if(res) console.log("节点异常，删除成功")
+                }
+                console.log("dial %s", peer.multiaddr)
+                this.sendData(conn, data);
+            })
         })
     }
 
@@ -130,7 +144,7 @@ class Peer {
         try {
             pull(
                 conn,
-                pull.map((m) => m.toString()),
+                pull.map((m) => JSON.parse(m)),
                 pull.log()
             )
         } catch (err) {
@@ -138,15 +152,24 @@ class Peer {
         }
     }
 
-    sendData(data, conn) {
+    sendData(conn, data) {
         try {
             pull(
-                pull.values([`from ${config.name}: this is a dialProtocol news, ${data} `]),
+                pull.values([`${JSON.stringify(data)}`]),
                 conn
             )
         } catch (err) {
             console.log(err)
         }
+    }
+
+    // 节点存入数据库
+    __addPeer(peer) {
+        let multiaddr = '',
+            peerid = peer.id.toB58String();
+        peer.multiaddrs.forEach((addr) => multiaddr = addr.toString());
+        // 数据库操作 存入multiaddr
+        peersModel.addPeer(peerid, multiaddr)
     }
 
 }
