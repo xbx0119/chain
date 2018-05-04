@@ -25,16 +25,16 @@ const digital = {
         // 对上层 网络层 提供的接口
 
         // 从网络层向下流动数据，即接受网络层的数据
-        flowDataFromNet: function(data) {
+        flowDataFromNet: function(type, data) {
             console.log("flowDataFromNet")
 
-            switch (data.type) {
+            switch (data) {
                 case 'record':
-                    console.log("get record, store");
+                    console.log("flowDataFromNet: |--  type: %s, data: %s", type, data);
                     
                     break;
                 case 'block':
-                    console.log("get block, store");
+                    console.log("flowDataFromNet: |--  type: %s, data: %s", type, data);
                     break;
                 default:
                     break;
