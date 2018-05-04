@@ -147,7 +147,9 @@ class Peer {
             pull(
                 conn,
                 pull.map((m) => JSON.parse(m)),
-                console.log()
+                pull.drain(function(data) {
+                    console.log(data)
+                })
             )
         } catch (err) {
             console.log(err)
