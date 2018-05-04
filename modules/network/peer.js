@@ -12,6 +12,8 @@ const config = require('../../config');
 
 const peersModel = require('../../models/peersModel');
 
+const Digital = require('../digital');
+
 
 class Peer {
     constructor() {
@@ -145,7 +147,7 @@ class Peer {
             pull(
                 conn,
                 pull.map((m) => JSON.parse(m)),
-                pull.log()
+                console.log()
             )
         } catch (err) {
             console.log(err)
