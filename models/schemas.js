@@ -18,7 +18,16 @@ var blocksSchema = new Schema({
     blockhash: String,
     parenthash: String,
     merkle: String,
-    records: String
+    records: [{ 
+        version: String,
+        timestamp: String,
+        recipientId: String,
+        senderId: String,
+        senderPublicKey: String,
+        hash: String,
+        message: String,
+        signature: String
+    }]
 });
 
 

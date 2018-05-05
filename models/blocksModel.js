@@ -6,7 +6,8 @@ const Blocks = mongoose.model('blocks', Schemas.blocksSchema);
 const BlocksModel = {};
 
 BlocksModel.addBlock = async function (data) {
-    const block = await Blocks.findOne({ height: data.height });
+    console.log(data)
+    const block = await Blocks.findOne({ height: +data.height });
     if (!block) {
         // 添加
         const res = await Blocks.create(data);
@@ -35,9 +36,14 @@ BlocksModel.getAllBlocks = async function () {
 }
 
 
-BlocksModel.count2GetHeight = async function () {
-    const count = await Blocks.count({});
-    return count;
+BlocksModel.maxHeight = async function () {
+    // const count = await Blocks.count({});
+    const last = await Blocks.aggregate([
+        { $sort: { "height": -1 } },
+        { $limit: 1 }
+    ]);
+    const height = last[0].height;
+    return height;
 }
 
 export default BlocksModel;

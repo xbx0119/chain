@@ -6,9 +6,9 @@ class Block {
         this.recordlist = [];
     }
 
-    produce() {
+    async produce() {
         const block =  {
-            height: this.__height(),
+            height: await this.__height(),
 
             // 头部结构
             version: this.__version(),
@@ -52,7 +52,8 @@ class Block {
 
 
     async __height() {
-        const height = await BlockModel.count2GetHeight();
+        const height = await BlockModel.maxHeight();
+        console.log(height)
         return height + 1;    
     }
 
