@@ -1,3 +1,7 @@
+import Record from './record';
+
+import BlockModel from '../../models/blocksModel';
+
 
 class Block {
     constructor() {
@@ -5,7 +9,7 @@ class Block {
     }
 
     produce() {
-        return {
+        const block =  {
             height: this.__height(),
 
             // 头部结构
@@ -21,12 +25,21 @@ class Block {
             //区块主体，包含所有交易信息，即账本
             records: this.__records()
         }
+
+        this.storeInDB(block)
+
+        return block;
     }
 
     // 存储区块到数据库
-    store() {
+    async storeInDB(block) {
         // some code
-        console.log("store block to database");
+        const res = await BlockModel.addBlock(block);
+        if(res) {
+            console.log("store block to database");
+        }else {
+            console.log("err: store block")
+        }
     }
 
 
@@ -55,7 +68,10 @@ class Block {
     }
 
     __records() {
-        return [];    
+        const records = Record.storelist;
+        Record.cleanStoreList();
+
+        return records;    
     }
 
 }

@@ -1,7 +1,7 @@
 
 class Record {
     constructor() {
-        
+        this.storelist = [];
     }
 
     produce() {
@@ -15,6 +15,15 @@ class Record {
             message: this.__message(),
             signature: this.__signature()
         }
+    }
+
+
+    storeInMem(record) {
+        this.storelist.push(list)
+    }
+
+    cleanStoreList() {
+        this.storelist = [];
     }
 
 

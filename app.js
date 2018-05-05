@@ -17,7 +17,6 @@ const app = {
     },
 
     dbConnect: function(start_process) {
-        console.log(config)
         const dbURL = `mongodb://${config.db_host}/${config.db_name}`;
         mongoose.connect(dbURL, {
             user: config.db_user,

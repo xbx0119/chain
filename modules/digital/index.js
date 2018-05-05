@@ -20,6 +20,11 @@ const digital = {
                 Network.interface.emitDataFromDigital('record', digital.Record.produce())
 
             }, 5000);
+
+
+            setInterval(() => {
+                Network.interface.emitDataFromDigital('block', digital.Block.produce())
+            }, 10 * 1000);
         }
         console.log("1. 数据层已启动");
     },
@@ -32,10 +37,11 @@ const digital = {
             switch (type) {
                 case 'record':
                     console.log("flowDataFromNet: |--  type: %s, data: %s", type, data);
-                    
+                    digital.Record.storeInMem(data)
                     break;
                 case 'block':
                     console.log("flowDataFromNet: |--  type: %s, data: %s", type, data);
+                    digital.Block.storeInDB(data)
                     break;
                 default:
                     console.log("default")
@@ -44,7 +50,5 @@ const digital = {
         }
     }
 }
-
-console.log(digital)
 
 export default digital;
