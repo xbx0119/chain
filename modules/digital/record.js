@@ -19,7 +19,7 @@ class Record {
 
 
     storeInMem(record) {
-        this.storelist.push(list)
+        this.storelist.push(record)
     }
 
     cleanStoreList() {
