@@ -1,5 +1,6 @@
-const mongoose = require('mongoose');
-const Schemas = require('./schemas');
+import mongoose from 'mongoose';
+import Schemas from './schemas';
+
 const Peers = mongoose.model('peers', Schemas.peersSchema);
 
 const PeersModel = {};
@@ -34,4 +35,4 @@ PeersModel.getAllPeers = async function() {
     return peers;
 }
 
-module.exports = PeersModel;
+export default PeersModel;

@@ -4,7 +4,7 @@
  */
 
 
-const path = require('path');
+import path from 'path';
 
 const config = {
     version: "0.0.1",
@@ -40,4 +40,4 @@ const config = {
     rsaPublicKey_path: path.join(__dirname, 'chain_rsa.pub')
 }
 
-module.exports = config;
+export default config;

@@ -1,4 +1,4 @@
-const Peer = require('./peer');
+import Peer from './peer';
 
 const network = {
     peer: null,
@@ -18,6 +18,7 @@ const network = {
         // 从数据层向网络层发送数据
         emitDataFromDigital: function (type, data) {
             data = (typeof data === 'string') ? data : JSON.stringify(data);
+            console.log("emitDataFromDigital: " + data)
             network.peer.emitSend('/' + type, data);
         },
 
@@ -26,4 +27,4 @@ const network = {
     }
 }
 
-module.exports = network;
+export default network;

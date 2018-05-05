@@ -1,10 +1,10 @@
 // import digital modules
-const Block = require('./block');
-const Record = require('./record');
+import Block from './block';
+import Record from './record';
 
-const config = require('../../config');
+import config from '../../config';
 
-const Network = require('../network');
+import Network from '../network';
 
 
 const digital = {
@@ -46,4 +46,6 @@ const digital = {
     }
 }
 
-module.exports = digital;
+console.log(digital)
+
+export default digital;

@@ -1,15 +1,12 @@
-const config = require('./config');
-const digital = require('./modules/digital');
-const network = require('./modules/network');
+import config from './config';
+import digital from './modules/digital';
+import network from './modules/network';
 
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 mongoose.Promise = global.Promise;
 
 
-
-
 const app = {
-
 
     start: function() {
         this.dbConnect(function() {
@@ -20,6 +17,7 @@ const app = {
     },
 
     dbConnect: function(start_process) {
+        console.log(config)
         const dbURL = `mongodb://${config.db_host}/${config.db_name}`;
         mongoose.connect(dbURL, {
             user: config.db_user,
@@ -31,10 +29,10 @@ const app = {
                 console.log("0. 数据库已连接"); 
                 start_process()
             },
-            (err) => { console.log("0. 数据库连接失败"); }
+            (err) => { console.log("0. 数据库连接失败"+err); }
         );
     }
 
 }
 
-module.exports = app;
+export default app;

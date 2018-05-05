@@ -1,16 +1,16 @@
-const Libp2p = require('libp2p');
-const TCP = require('libp2p-tcp');
+import Libp2p from 'libp2p';
+import TCP from 'libp2p-tcp';
 // const PeerInfo = require('peer-info');
 
-const SPDY = require('libp2p-spdy');
-const SECIO = require('libp2p-secio');
+import SPDY from 'libp2p-spdy';
+import SECIO from 'libp2p-secio';
 
-const Railing = require('libp2p-railing');
-const MulticastDNS = require('libp2p-mdns');
+import Railing from 'libp2p-railing';
+import MulticastDNS from 'libp2p-mdns';
 
-const KadDHT = require('libp2p-kad-dht');
+import KadDHT from 'libp2p-kad-dht';
 
-const config = require('../../config');
+import config from '../../config';
 
 class P2P extends Libp2p {
     constructor(peerinfo) {
@@ -30,4 +30,4 @@ class P2P extends Libp2p {
     }
 }
 
-module.exports = P2P;
+export default P2P;

@@ -1,18 +1,18 @@
-const p2p = require('./p2p');
-const PeerInfo = require('peer-info');
-const PeerId = require('peer-id');
-const pull = require('pull-stream');
-const waterfall = require('async/waterfall');
-const crypto = require('libp2p-crypto');
-const jwkToPem = require('jwk-to-pem');
-const path = require('path');
-const fs = require('fs');
+import p2p from './p2p';
+import PeerInfo from 'peer-info';
+import PeerId from 'peer-id';
+import pull from 'pull-stream';
+import waterfall from 'async/waterfall';
+import crypto from 'libp2p-crypto';
+import jwkToPem from 'jwk-to-pem';
+import path from 'path';
+import fs from 'fs';
 
-const config = require('../../config');
+import config from '../../config';
 
-const peersModel = require('../../models/peersModel');
+import peersModel from '../../models/peersModel';
 
-const Digital = require('../digital');
+import Digital from '../digital';
 
 
 class Peer {
@@ -176,9 +176,9 @@ class Peer {
             peerid = peer.id.toB58String();
         peer.multiaddrs.forEach((addr) => multiaddr = addr.toString());
         // 数据库操作 存入multiaddr
-        peersModel.addPeer(peerid, multiaddr)
+        peersModel.admoduledPeer(peerid, multiaddr)
     }
 
 }
 
-module.exports = Peer;
+export default Peer;

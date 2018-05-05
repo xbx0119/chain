@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 
-const app = require('../app');
+import app from '../app';
 
 
 app.start();

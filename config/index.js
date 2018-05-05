@@ -1,13 +1,8 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
-let configDefault = require('./config.default.js');
-
-
-let configUser = {};
-if (fs.existsSync(path.join(__dirname, './config.user.js'))) {
-    configUser = require('./config.user.js')
-}
+import configDefault from './config.default.js';
+import configUser from './config.user.js';
 
 
 let config = {};
@@ -16,4 +11,4 @@ Object.assign(config, configDefault, configUser);
 console.log(JSON.stringify(config))
 
 
-module.exports = config;
+export default config;

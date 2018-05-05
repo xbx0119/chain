@@ -52,4 +52,4 @@ class Record {
 
     
 }
-module.exports = Record;
+export default Record;

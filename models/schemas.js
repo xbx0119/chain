@@ -1,4 +1,4 @@
-var mongoose = require('mongoose');
+import mongoose from 'mongoose';
 var Schema = mongoose.Schema;
 
 
@@ -8,18 +8,21 @@ var peersSchema = new Schema({
     peerid: String,
     multiaddr: String
 });
-exports.peersSchema = peersSchema;
 
 
 // 区块
 var blocksSchema = new Schema({
     
 });
-exports.blocksSchema = blocksSchema;
 
 
 // 记录（交易）
 var recordsSchema = new Schema({
     
 });
-exports.recordsSchema = recordsSchema;
+
+export default {
+    peersSchema,
+    blocksSchema,
+    recordsSchema
+}
