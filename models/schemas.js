@@ -12,7 +12,7 @@ var peersSchema = new Schema({
 
 // 区块
 var blocksSchema = new Schema({
-    height: String,
+    height: Number,
     version: String,
     timestamp: String,
     blockhash: String,
