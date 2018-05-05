@@ -10,8 +10,14 @@ BlocksModel.addBlock = async function (data) {
     if (!block) {
         // 添加
         const res = await Blocks.create(data);
-        console.log("add: %s", res)
+        if(res) {
+            console.log("add: %s", res)
+            return true;
+        }else {
+            return false;
+        }
     } else {
+        return false;
         console.log("height exist")
     }
 }

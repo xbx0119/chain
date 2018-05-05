@@ -42,6 +42,7 @@ class Block {
         // some code
         block = (typeof block == 'object') ? block : JSON.parse(block);
         const res = await BlockModel.addBlock(block);
+        console.log(res)
         if(res) {
             console.log("store block to database");
         }else {
