@@ -1,11 +1,9 @@
-import Record from './record';
-
 import BlockModel from '../../models/blocksModel';
 
 
 class Block {
     constructor() {
-        
+        this.recordlist = [];
     }
 
     produce() {
@@ -29,6 +27,14 @@ class Block {
         this.storeInDB(block)
 
         return block;
+    }
+
+    addRecord2List(record) {
+        this.recordlist.push(record)
+    }
+
+    cleanRecordList() {
+        this.recordlist = [];
     }
 
     // 存储区块到数据库
@@ -68,8 +74,8 @@ class Block {
     }
 
     __records() {
-        const records = Record.storelist;
-        Record.cleanStoreList();
+        const records = this.recordlist;
+        this.recordlist = [];
 
         return records;    
     }

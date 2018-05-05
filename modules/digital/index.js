@@ -37,7 +37,7 @@ const digital = {
             switch (type) {
                 case 'record':
                     console.log("flowDataFromNet: |--  type: %s, data: %s", type, data);
-                    digital.Record.storeInMem(data)
+                    digital.Block.addRecord2List(data)
                     break;
                 case 'block':
                     console.log("flowDataFromNet: |--  type: %s, data: %s", type, data);
