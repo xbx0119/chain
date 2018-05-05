@@ -38,6 +38,7 @@ const digital = {
                     console.log("flowDataFromNet: |--  type: %s, data: %s", type, data);
                     break;
                 default:
+                    console.log("default")
                     break;
             }
         }
