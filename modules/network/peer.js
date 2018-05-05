@@ -148,9 +148,8 @@ class Peer {
                 conn,
                 pull.map((m) => JSON.parse(m)),
                 pull.drain(function(data) {
-                    console.log(data)
-                    console.log(Digital)
-                    Digital.interface.flowDataFromNet(protocol.slice(1), data);
+                    console.log(protocol)
+                    Digital.interface.flowDataFromNet(protocol, data);
                 })
             )
         } catch (err) {
