@@ -25,6 +25,9 @@ class Block {
         }
 
         this.storeInDB(block)
+        console.log("*****************")
+        console.log(block)
+        console.log("*****************")
 
         return block;
     }

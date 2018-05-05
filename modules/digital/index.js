@@ -24,7 +24,7 @@ const digital = {
 
             setInterval(() => {
                 Network.interface.emitDataFromDigital('block', digital.Block.produce())
-            }, 10 * 1000);
+            }, 15 * 1000);
         }
         console.log("1. 数据层已启动");
     },

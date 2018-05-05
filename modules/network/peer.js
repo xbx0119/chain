@@ -148,6 +148,7 @@ class Peer {
                 conn,
                 pull.map((m) => JSON.parse(m)),
                 pull.drain(function(data) {
+                    console.log(data)
                     Digital.interface.flowDataFromNet(protocol.slice(1), data);
                 })
             )
@@ -159,7 +160,7 @@ class Peer {
     sendData(conn, data) {
         try {
             pull(
-                pull.values([`${JSON.stringify(data)}`]),
+                pull.values([data]),
                 conn
             )
         } catch (err) {
