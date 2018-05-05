@@ -118,9 +118,9 @@ class Peer {
         })
     }
 
-    registReceiveType(protocol) {
-        this.node.handle(protocol, (protocol, conn) => {
-            this.getData(protocol, conn);
+    registReceiveType(type) {
+        this.node.handle(type, (protocol, conn) => {
+            this.getData(type, conn);
         })
     }
 
