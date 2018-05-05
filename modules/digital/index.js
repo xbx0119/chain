@@ -29,8 +29,6 @@ const digital = {
 
         // 从网络层向下流动数据，即接受网络层的数据
         flowDataFromNet: function(type, data) {
-            console.log("flowDataFromNet")
-
             switch (type) {
                 case 'record':
                     console.log("flowDataFromNet: |--  type: %s, data: %s", type, data);

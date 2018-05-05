@@ -148,10 +148,7 @@ class Peer {
                 conn,
                 pull.map((m) => JSON.parse(m)),
                 pull.drain(function(data) {
-                    console.log(data)
-                    console.log(Digital)
                     Digital.interface.flowDataFromNet(protocol, data);
-
                 })
             )
         } catch (err) {
@@ -176,7 +173,7 @@ class Peer {
             peerid = peer.id.toB58String();
         peer.multiaddrs.forEach((addr) => multiaddr = addr.toString());
         // 数据库操作 存入multiaddr
-        peersModel.admoduledPeer(peerid, multiaddr)
+        peersModel.addPeer(peerid, multiaddr)
     }
 
 }
