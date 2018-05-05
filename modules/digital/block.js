@@ -40,6 +40,7 @@ class Block {
     // 存储区块到数据库
     async storeInDB(block) {
         // some code
+        block = (typeof block == 'object') ? block : JSON.parse(block);
         const res = await BlockModel.addBlock(block);
         if(res) {
             console.log("store block to database");
