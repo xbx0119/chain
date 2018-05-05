@@ -34,4 +34,10 @@ BlocksModel.getAllBlocks = async function () {
     return blocks;
 }
 
+
+BlocksModel.count2GetHeight = async function () {
+    const count = await Blocks.count({});
+    return count;
+}
+
 export default BlocksModel;

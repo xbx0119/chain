@@ -51,8 +51,9 @@ class Block {
     }
 
 
-    __height() {
-        return 'test';    
+    async __height() {
+        const height = await BlockModel.count2GetHeight();
+        return height + 1;    
     }
 
     __version() {
