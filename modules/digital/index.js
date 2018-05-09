@@ -22,8 +22,8 @@ const digital = {
             }, 5000);
 
 
-            setInterval(() => {
-                Network.interface.emitDataFromDigital('block', digital.Block.produce())
+            setInterval(async () => {
+                Network.interface.emitDataFromDigital('block', await digital.Block.produce())
             }, 15 * 1000);
         }
         console.log("1. 数据层已启动");
