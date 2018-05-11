@@ -3,17 +3,21 @@ import Peer from './peer';
 const network = {
     peer: null,
 
-    start: () => {
-        network.peer = new Peer();   
-        network.peer.start(function() {
-            console.log("2. 网络层已启动");
-            console.log("after operation")
+    start: function(next) {
+        this.peer = new Peer();   
+        this.peer.start(function() {
+            console.log("1. 网络层已启动");
+            next()
         });
 
     },
 
     interface: {
         // 对下层 数据层 提供的接口
+
+        getPeerTypr: function() {
+            return this.peer.type;
+        },
 
         // 从数据层向网络层发送数据
         emitDataFromDigital: function (type, data) {

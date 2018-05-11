@@ -22,7 +22,7 @@ class Record {
     }
 
     __timestamp() {
-        return 'test';
+        return Date.now();
     }
 
     __recipientId() {

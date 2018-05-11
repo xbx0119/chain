@@ -9,6 +9,7 @@ let config = {};
 Object.assign(config, configDefault, configUser);
 
 console.log(JSON.stringify(config))
+console.log()
 
 
 export default config;

@@ -1,17 +1,17 @@
 import config from './config';
-import digital from './modules/digital';
 import network from './modules/network';
+import digital from './modules/digital';
 
 import mongoose from 'mongoose';
 mongoose.Promise = global.Promise;
-
 
 const app = {
 
     start: function() {
         this.dbConnect(function() {
-            digital.start();
-            network.start();
+            network.start(function() {
+                digital.start()
+            })
         })
         
     },

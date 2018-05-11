@@ -56,7 +56,6 @@ class Block {
 
     async __height() {
         const height = await BlockModel.maxHeight();
-        console.log(height)
         return height + 1;    
     }
 
@@ -65,7 +64,7 @@ class Block {
     }
 
     __timestamp() {
-        return 'test';    
+        return Date.now();    
     }
 
     __blockhash() {

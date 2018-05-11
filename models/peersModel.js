@@ -30,8 +30,10 @@ PeersModel.removePeer = async function(peerid) {
 }
 
 
-PeersModel.getAllPeers = async function() {
-    const peers = await Peers.find({});
+PeersModel.getPeersByType = async function(type) {
+    const peers = await Peers.find({
+        type: type
+    });
     return peers;
 }
 

@@ -18,9 +18,13 @@ import Digital from '../digital';
 class Peer {
     constructor() {
         this.node = null;
+        this.type = 'citizen'; // 统一成为公民节点
+
         if (!this.__hasKey()) {
             this.__genKey();
         }
+        // 节点逻辑
+
     }
 
     // 检查是否存在公钥和私钥，不存在返回false，生成一个；存在返回true，使用现有的
@@ -56,7 +60,6 @@ class Peer {
     }
 
     start(callback) {
-        // let node;
         const privatePem = fs.readFileSync(config.rsaPrivateKey_path).toString();
 
         crypto.keys.import(privatePem, '', (err, privKey) => {
@@ -78,10 +81,11 @@ class Peer {
                         
                         this.registReceiveType('/record');
                         this.registReceiveType('/block');
-
-                        callback()
                     }
-                ], (err) => this.__print(err))
+                ], (err) => {
+                    this.__print(err)
+                    callback()
+                })
             })
         }) 
     }
@@ -97,18 +101,6 @@ class Peer {
                     this.__addPeer(peer)
                 }
             })
-            
-
-            // this.emitSend('/record', {
-            //     "version": 0,
-            //     "timestamp": Date.now(),
-            //     "recipientId": "0",
-            //     "senderId": "1",
-            //     "senderPublicKey": "1",
-            //     "hash": "1", 
-            //     "message": "i send b a seed", 
-            //     "signature": "0", 
-            // });
         });
 
         this.node.on('peer:connect', (peer) => {
@@ -126,21 +118,83 @@ class Peer {
 
     async emitSend(protocol, data) {  
         console.log("emitSend: |-- type: %s, data: %s", protocol, data)
-        // 从数据库中获取peer发送数据
-        let peers = await peersModel.getAllPeers();
         
+        switch (type) {
+            case 'record':
+                this.sendRecord(protocol, data);
+                break;
+            case 'block':
+                
+                break;
+        
+            default:
+                break;
+        }
+        
+    }
+
+    // 发送交易记录
+    sendRecord(protocol, data) {
+        // 从数据库中获取元老节点
+        let peers = await peersModel.getPeersByType('senate');
+
+        // 向元老院发送数据
         peers.forEach((peer) => {
             this.node.dialProtocol(peer.multiaddr, protocol, (err, conn) => {
-                if (err) { 
+                if (err) {
                     // 拨号不通，节点异常，数据库删除节点
                     const res = peersModel.removePeer(peer.peerid);
-                    if(res) console.log("节点异常，删除成功")
+                    if (res) console.log("节点异常，删除成功")
+
+                    // 向元老院提议，排除此元老节点，选举新的元老
+                    // code
+
+
+                } else {
+                    console.log("dial %s", peer.multiaddr)
+                    this.sendData(conn, data);
                 }
-                console.log("dial %s", peer.multiaddr)
-                this.sendData(conn, data);
             })
         })
     }
+
+    sendBlock(protocol, data) {
+        // 从数据库中获取执政官节点
+        let peers = await peersModel.getPeersByType('archon');
+
+        // 向执政官发送数据
+        peers.forEach((peer) => {
+            this.node.dialProtocol(peer.multiaddr, protocol, (err, conn) => {
+                if (err) {
+                    // 执政官节点异常，但暂时不删除节点，直到选举产生新的执政官才删除或者说更新
+                    // const res = peersModel.removePeer(peer.peerid);
+                    // if (res) console.log("节点异常，删除成功")
+                    console.log("执政官节点异常")
+
+                    // 向元老院提议，选举新的执政官
+                    // code
+
+
+                } else {
+                    console.log("dial %s", peer.multiaddr)
+                    this.sendData(conn, data);
+                }
+            })
+        })
+    }
+
+    sendData(conn, data) {
+        try {
+            pull(
+                pull.values([data]),
+                conn
+            )
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+
 
     getData(protocol, conn) {
         try {
@@ -157,16 +211,35 @@ class Peer {
         }
     }
 
-    sendData(conn, data) {
-        try {
-            pull(
-                pull.values([data]),
-                conn
-            )
-        } catch (err) {
-            console.log(err)
+    // 收到交易记录
+    getRecord() {
+        if(this.type == 'senate') {
+
+        }else {
+            console.log("非元老院，不具备审核、存储交易的权利");
+            // 转发交易，将收到的交易转发给自己知道的元老节点
+            // code
         }
     }
+
+    // 收到区块记录
+    getBlock() {
+        // 1. 执政官节点：排序，确定最终方案(一定时间内收到的区块集中，包含交易数量中位数的区块，交易记录数量为0则不生成区块)
+        if(this.type == 'archon') {
+
+        }
+        // 2. 元老院节点：收到执政官最终敲定的区块，存储，入链，查找出尚未入块的交易，重新进入下一个区块的空间；向公民发布区块
+        else if(this.type == 'senate') {
+
+        }
+        // 3. 公民节点：收到元老院下发的区块，存储
+        else {
+
+        }
+
+
+    }
+
 
     // 节点存入数据库
     __addPeer(peer) {

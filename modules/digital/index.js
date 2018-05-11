@@ -11,22 +11,21 @@ const digital = {
     Block: null,
     Record: null,
 
-    start: () => {
+    start: function() {
         digital.Block = new Block();
         digital.Record = new Record();
+
         if(config.name != 'vultr') {
             setInterval(() => {
-
-                Network.interface.emitDataFromDigital('record', digital.Record.produce())
-
+                Network.interface.emitDataFromDigital('record', this.Record.produce())
             }, 5000);
 
-
             setInterval(async () => {
-                Network.interface.emitDataFromDigital('block', await digital.Block.produce())
+                Network.interface.emitDataFromDigital('block', await this.Block.produce())
             }, 15 * 1000);
         }
-        console.log("1. 数据层已启动");
+        
+        console.log("2. 数据层已启动");
     },
 
     interface: {

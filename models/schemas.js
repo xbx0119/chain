@@ -6,7 +6,8 @@ var Schema = mongoose.Schema;
 // 节点
 var peersSchema = new Schema({
     peerid: String,
-    multiaddr: String
+    multiaddr: String,
+    type: String  // 节点角色: archon执政官节点  senate元老节点   citizen公民节点
 });
 
 
