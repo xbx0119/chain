@@ -91,4 +91,4 @@ const consensus = {
     }
 }
 
-export default network;
+export default consensus;

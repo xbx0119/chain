@@ -34,7 +34,8 @@ var blocksSchema = new Schema({
 
 // 记录（交易）
 var recordsSchema = new Schema({
-    
+    hash: String,
+    record: String
 });
 
 export default {

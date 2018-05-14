@@ -1,9 +1,11 @@
 import BlockModel from '../../models/blocksModel';
 
+import record from './record';
+
 
 class Block {
     constructor() {
-        this.recordlist = [];
+        this.list = [];
     }
 
     async produce() {
@@ -32,15 +34,16 @@ class Block {
         return block;
     }
 
-    addRecord2List(record) {
-        this.recordlist.push(record)
+    addBlock2List(item) {
+        // const item = {hash: 'hash', block: 'block'}
+        this.list.push(item);
     }
 
-    cleanRecordList() {
-        this.recordlist = [];
-    }
 
     // 存储区块到数据库
+    // 存在之前的区块没有同步过来的情况，即当前数据库最大height不等于收到的block的height-1
+    // 需要向其他节点同步一下数据
+    // 需要完善!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     async storeInDB(block) {
         // some code
         block = (typeof block == 'object') ? block : JSON.parse(block);
@@ -48,8 +51,10 @@ class Block {
         console.log(res)
         if(res) {
             console.log("store block to database");
+            return true;
         }else {
             console.log("err: store block")
+            return false;
         }
     }
 
@@ -80,12 +85,9 @@ class Block {
     }
 
     __records() {
-        const records = this.recordlist;
-        this.recordlist = [];
-
-        return records;    
+        return record.getListValue();    
     }
 
 }
 
-export default Block;
+export default new Block();

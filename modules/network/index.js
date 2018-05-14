@@ -15,7 +15,7 @@ const network = {
     interface: {
         // 对下层 数据层 提供的接口
 
-        getPeerTypr: function() {
+        getPeerType: function() {
             return this.peer.type;
         },
 
@@ -27,6 +27,15 @@ const network = {
         },
 
         // 对上层 共识层 提供的接口
+
+        toConsensus: {
+            /**
+             * who: arr   type: string    data: string
+             */
+            sendWhoTypeData: function(who, type, data) {
+
+            }
+        }
         
     }
 }

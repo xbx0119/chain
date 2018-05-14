@@ -250,6 +250,12 @@ class Peer {
         peersModel.addPeer(peerid, multiaddr)
     }
 
+
+    
+    broadcast2Citizen() {
+
+    }
+
 }
 
 export default Peer;
