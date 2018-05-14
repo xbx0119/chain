@@ -29,12 +29,7 @@ const network = {
         // 对上层 共识层 提供的接口
 
         toConsensus: {
-            /**
-             * who: arr   type: string    data: string
-             */
-            sendWhoTypeData: function(who, type, data) {
-
-            }
+            sendWhoTypeData: this.peer.sendWhoTypeData
         }
         
     }

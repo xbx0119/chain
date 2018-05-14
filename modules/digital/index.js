@@ -51,6 +51,11 @@ const digital = {
             }
         },
 
+        toNet: {
+            addPeer: this.Peer.addPeer,
+            removePeer: this.Peer.removePeer
+        },
+
 
 
 

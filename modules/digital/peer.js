@@ -6,6 +6,12 @@ class Peer {
 
     }
 
+    async addPeer(peerid, multiaddr) {
+        const res = await PeersModel.addPeer(peerid, multiaddr)
+        if(res) { return true; }
+        else { return false; }
+    }
+
     async getPeersByType(type) {
         const peers = await PeersModel.getPeersByType(type);
         return peers;
@@ -19,6 +25,12 @@ class Peer {
         }else {
             return false;
         }
+    }
+
+    async removePeer(peerid) {
+        const res = await peersModel.removePeer(peer.peerid);
+        if(res) { return true; }
+        else { return false; }
     }
 
 

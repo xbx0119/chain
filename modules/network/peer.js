@@ -10,9 +10,7 @@ import fs from 'fs';
 
 import config from '../../config';
 
-import peersModel from '../../models/peersModel';
-
-import Digital from '../digital';
+import digital from '../digital';
 
 
 class Peer {
@@ -133,56 +131,6 @@ class Peer {
         
     }
 
-    // 发送交易记录
-    sendRecord(protocol, data) {
-        // 从数据库中获取元老节点
-        let peers = await peersModel.getPeersByType('senate');
-
-        // 向元老院发送数据
-        peers.forEach((peer) => {
-            this.node.dialProtocol(peer.multiaddr, protocol, (err, conn) => {
-                if (err) {
-                    // 拨号不通，节点异常，数据库删除节点
-                    const res = peersModel.removePeer(peer.peerid);
-                    if (res) console.log("节点异常，删除成功")
-
-                    // 向元老院提议，排除此元老节点，选举新的元老
-                    // code
-
-
-                } else {
-                    console.log("dial %s", peer.multiaddr)
-                    this.sendData(conn, data);
-                }
-            })
-        })
-    }
-
-    sendBlock(protocol, data) {
-        // 从数据库中获取执政官节点
-        let peers = await peersModel.getPeersByType('archon');
-
-        // 向执政官发送数据
-        peers.forEach((peer) => {
-            this.node.dialProtocol(peer.multiaddr, protocol, (err, conn) => {
-                if (err) {
-                    // 执政官节点异常，但暂时不删除节点，直到选举产生新的执政官才删除或者说更新
-                    // const res = peersModel.removePeer(peer.peerid);
-                    // if (res) console.log("节点异常，删除成功")
-                    console.log("执政官节点异常")
-
-                    // 向元老院提议，选举新的执政官
-                    // code
-
-
-                } else {
-                    console.log("dial %s", peer.multiaddr)
-                    this.sendData(conn, data);
-                }
-            })
-        })
-    }
-
     sendData(conn, data) {
         try {
             pull(
@@ -203,7 +151,7 @@ class Peer {
                 pull.map((m) => m.toString()),
                 pull.drain(function (data) {
                     console.log(data)
-                    Digital.interface.flowDataFromNet(protocol.slice(1), data);
+                    digital.interface.flowDataFromNet(protocol.slice(1), data);
                 })
             )
         } catch (err) {
@@ -247,13 +195,29 @@ class Peer {
             peerid = peer.id.toB58String();
         peer.multiaddrs.forEach((addr) => multiaddr = addr.toString());
         // 数据库操作 存入multiaddr
-        peersModel.addPeer(peerid, multiaddr)
+        digital.interface.toNet.addPeer(peerid, multiaddr);
     }
 
 
     
-    broadcast2Citizen() {
+    async sendWhoTypeData(who, type, data) {
+        who.forEach((peer) => {
+            this.node.dialProtocol(peer.multiaddr, type, (err, conn) => {
+                if (err) {
+                    // 拨号不通，节点异常，数据库删除节点
+                    const res = await digital.interface.toNet.removePeer(peer.peerid)
+                    if (res) console.log("节点异常，删除成功")
 
+                    // 若元老院节点或执政官节点异常,实行其他措施选举新节点
+                    // code
+
+
+                } else {
+                    console.log("dial %s", peer.multiaddr)
+                    this.sendData(conn, data);
+                }
+            })
+        })
     }
 
 }

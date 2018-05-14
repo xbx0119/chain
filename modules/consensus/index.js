@@ -12,7 +12,6 @@ import Network from '../network';
 import RecordCons from './peer_cons';
 import BlockCons from './block_cons';
 import PeerCons from './peer_cons';
-import Block from '../digital/block';
 
 
 const consensus = {
