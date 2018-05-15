@@ -11,6 +11,7 @@ import fs from 'fs';
 import config from '../../config';
 
 import digital from '../digital';
+import consensus from '../consensus';
 
 
 class Peer {
@@ -151,43 +152,14 @@ class Peer {
                 pull.map((m) => m.toString()),
                 pull.drain(function (data) {
                     console.log(data)
-                    digital.interface.flowDataFromNet(protocol.slice(1), data);
+
+                    consensus.interface.deliverDataFromNet(conn, protocol.slice(1), data)
                 })
             )
         } catch (err) {
             console.log(err)
         }
     }
-
-    // 收到交易记录
-    getRecord() {
-        if(this.type == 'senate') {
-
-        }else {
-            console.log("非元老院，不具备审核、存储交易的权利");
-            // 转发交易，将收到的交易转发给自己知道的元老节点
-            // code
-        }
-    }
-
-    // 收到区块记录
-    getBlock() {
-        // 1. 执政官节点：排序，确定最终方案(一定时间内收到的区块集中，包含交易数量中位数的区块，交易记录数量为0则不生成区块)
-        if(this.type == 'archon') {
-
-        }
-        // 2. 元老院节点：收到执政官最终敲定的区块，存储，入链，查找出尚未入块的交易，重新进入下一个区块的空间；向公民发布区块
-        else if(this.type == 'senate') {
-
-        }
-        // 3. 公民节点：收到元老院下发的区块，存储
-        else {
-
-        }
-
-
-    }
-
 
     // 节点存入数据库
     __addPeer(peer) {

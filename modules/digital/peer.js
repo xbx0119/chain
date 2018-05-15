@@ -17,8 +17,8 @@ class Peer {
         return peers;
     }
 
-    async checkPeerType(multiaddr, type) {
-        const peer = await PeersModel.getPeerByMultiaddr(multiaddr);
+    async checkPeerType(peerid, type) {
+        const peer = await PeersModel.getPeerByPeerid(peerid);
 
         if(peer && peer.type == type) {
             return true;

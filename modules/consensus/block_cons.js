@@ -22,10 +22,10 @@ const block_cons = new Consensus('block_cons');
 
 // 执政官从网络收到block，加入block队列，一定时间后对队列中的block按一定策略选择
 // 执政官节点接受元老院提交的block进行裁决
-block_cons.fromNet.archonDeal = async function(multiaddr, block) {
+block_cons.fromNet.archonDeal = async function(peerid, block) {
     block = (typeof block === 'object') ? block : JSON.parse(block);
     // 1. 验证发送人是否是元老院节点
-    const fromSenate = await digital.interface.toConsensus.peer.checkPeerType(multiaddr, 'senate');
+    const fromSenate = await digital.interface.toConsensus.peer.checkPeerType(peerid, 'senate');
 
     // 2. 加入block队列
     if(fromSenate) {
@@ -41,31 +41,37 @@ block_cons.fromNet.archonDeal = async function(multiaddr, block) {
 // 元老院节点收到执政官下达的决策区块
 // 元老院接受来自执政官节点的block存储区块，鉴定后存储，下达公民
 // 注意还需要判定消息是否真的来自于执政官
-block_cons.fromNet.senateDeal = function (multiaddr, block) {
+block_cons.fromNet.senateDeal = function (peerid, block) {
     block = (typeof block === 'object') ? block : JSON.parse(block);
     // 1. 鉴定是否是执政官节点下达的
-    const fromSenate = await digital.interface.toConsensus.peer.checkPeerType(multiaddr, 'archon');
+    const fromArchon = await digital.interface.toConsensus.peer.checkPeerType(peerid, 'archon');
 
-    // 2. 将提案区块存储数据库
-    const store = await digital.interface.toConsensus.block.storeInDB(block);
-    
-    // 3. 提取区块中的交易信息，与record列表中的交易比对，排除已经进入区块的record
-    if(store) {
-        const confirmedRecords = block.records; // 对象
-        digital.interface.toConsensus.record.removeConfirmedRecordFromList(confirmedRecords);
-    }  
+    if (fromArchon) {
+        // 2. 将提案区块存储数据库
+        const store = await digital.interface.toConsensus.block.storeInDB(block);
+        
+        // 3. 提取区块中的交易信息，与record列表中的交易比对，排除已经进入区块的record
+        if(store) {
+            const confirmedRecords = block.records; // 对象
+            digital.interface.toConsensus.record.removeConfirmedRecordFromList(confirmedRecords);
+        }  
+    }
+
 };
 
 // 公民节点收到元老院公布的决策区块
 // 公民节点接受来自元老院的block，鉴定后负责存储
-block_cons.fromNet.citizenDeal = function (multiaddr, block) {
+block_cons.fromNet.citizenDeal = function (peerid, block) {
     // 1. 鉴定是否是元老院公布的
     block = (typeof block === 'object') ? block : JSON.parse(block);
     // 1. 鉴定是否是执政官节点下达的
-    const fromSenate = await digital.interface.toConsensus.peer.checkPeerType(multiaddr, 'archon');
+    const fromSenate = await digital.interface.toConsensus.peer.checkPeerType(peerid, 'archon');
 
-    // 2. 存储进入数据库
-    const store = await digital.interface.toConsensus.block.storeInDB(block);
+    if(fromSenate) {
+        // 2. 存储进入数据库
+        const store = await digital.interface.toConsensus.block.storeInDB(block);
+    }
+
 }
 
 

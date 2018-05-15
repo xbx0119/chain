@@ -7,11 +7,13 @@
  *    公民citizen：主要负责生成交易信息record，收到的record转发给自己已知的元老节点，收到的block存储
  * 
  */
+import { promisify } from 'es6-promisify';
 
 import Network from '../network';
 import RecordCons from './peer_cons';
 import BlockCons from './block_cons';
 import PeerCons from './peer_cons';
+
 
 
 const consensus = {
@@ -23,28 +25,40 @@ const consensus = {
 
     interface: {
         // 从网络层接收数据，处理后传递给数据层
-        deliverDataFromNet: function (type, data) {
+        deliverDataFromNet: async function (conn, type, data) {
             const peer_type = Network.peer.type;
+            const peerinfo = await promisify(conn.getPeerInfo)();
+            const peerid = '';
+
+            if(peerinfo) {
+                peerid = peerinfo.id.toB58String();
+                console.log(peerid)
+            }else {
+                throw "peerinfo get error"
+            }
+            
             
             switch (type) {
                 case 'record':
+                    console.log("deliverDataFromNet: |--  type: %s, data: %s", type, data);
                     if(peer_type === 'citizen') {
-                        RecordCons.fromNet.citizenDeal();
+                        RecordCons.fromNet.citizenDeal(data);
                     }else if(peer_type === 'senate') {
-                        RecordCons.fromNet.senateDeal();
+                        RecordCons.fromNet.senateDeal(data);
                     }else if(peer_type === 'archon') {
-                        RecordCons.fromNet.archonDeal();
+                        RecordCons.fromNet.archonDeal(data);
                     }else {
                         RecordCons.fromNet.unSupportDeal('不支持的节点');
                     } 
                     break;
                 case 'block':
+                    console.log("deliverDataFromNet: |--  type: %s, data: %s", type, data);
                     if (peer_type === 'archon') {
-                        BlockCons.fromNet.archonDeal();
+                        BlockCons.fromNet.archonDeal(peerid, data);
                     } else if (peer_type === 'senate') {
-                        BlockCons.fromNet.senateDeal()
+                        BlockCons.fromNet.senateDeal(peerid, data)
                     } else if(peer_type === 'citizen') {
-                        BlockCons.fromNet.citizenDeal();
+                        BlockCons.fromNet.citizenDeal(peerid, data);
                     }else {
                         BlockCons.fromNet.unSupportDeal('当前节点类型不支持接受record')
                     }
@@ -60,18 +74,18 @@ const consensus = {
         },
         
         // 从数据层接受数据，处理后传递给网络层
-        deliverDataFromDigital: function() {
+        deliverDataFromDigital: function(data) {
             const peer_type = Network.peer.type;
 
             switch (type) {
                 case 'record':
-                    RecordCons.fromDigital.citizenDeal();
+                    RecordCons.fromDigital.citizenDeal(data);
                     break;
                 case 'block':
                     if (peer_type === 'archon') {
-                        BlockCons.fromDigital.archonDeal();
+                        BlockCons.fromDigital.archonDeal(data);
                     }else if(peer_type === 'senate') {
-                        BlockCons.fromDigital.senateDeal();
+                        BlockCons.fromDigital.senateDeal(data);
                     }else if(peer_type === 'citizen') {
                         BlockCons.fromDigital.unSupportDeal('公民节点不能产生block')
                     }else {

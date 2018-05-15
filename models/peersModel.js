@@ -37,9 +37,9 @@ PeersModel.getPeersByType = async function(type) {
     return peers;
 }
 
-PeersModel.getPeerByMultiaddr = async function(multiaddr) {
+PeersModel.getPeerByPeerid = async function(peerid) {
     const peer = await Peers.findOne({
-        multiaddr: multiaddr
+        peerid: peerid
     });
     return peer;
 }
