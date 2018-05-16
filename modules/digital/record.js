@@ -1,8 +1,9 @@
-import RecordsModel from '../../recordsModel';
+import RecordsModel from '../../models/recordsModel';
 
 class Record {
     constructor() {
         this.list = []; // {hash: 'hash', record: 'record'}
+        console.log("digital record constructor")
     }
 
     produce() {

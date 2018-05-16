@@ -12,9 +12,9 @@
 import digital from '../digital';
 import network from '../network';
 
-import Consensus from './Consensus';
+import CommonConsensus from './CommonConsensus';
 
-const block_cons = new Consensus('block_cons');
+const block_cons = new CommonConsensus('block_cons');
 
 /**
  * 对来自网络层接收的block的共识--------------------------------------------------------------------------------
@@ -41,7 +41,7 @@ block_cons.fromNet.archonDeal = async function(peerid, block) {
 // 元老院节点收到执政官下达的决策区块
 // 元老院接受来自执政官节点的block存储区块，鉴定后存储，下达公民
 // 注意还需要判定消息是否真的来自于执政官
-block_cons.fromNet.senateDeal = function (peerid, block) {
+block_cons.fromNet.senateDeal = async function (peerid, block) {
     block = (typeof block === 'object') ? block : JSON.parse(block);
     // 1. 鉴定是否是执政官节点下达的
     const fromArchon = await digital.interface.toConsensus.peer.checkPeerType(peerid, 'archon');
@@ -61,7 +61,7 @@ block_cons.fromNet.senateDeal = function (peerid, block) {
 
 // 公民节点收到元老院公布的决策区块
 // 公民节点接受来自元老院的block，鉴定后负责存储
-block_cons.fromNet.citizenDeal = function (peerid, block) {
+block_cons.fromNet.citizenDeal = async function (peerid, block) {
     // 1. 鉴定是否是元老院公布的
     block = (typeof block === 'object') ? block : JSON.parse(block);
     // 1. 鉴定是否是执政官节点下达的
@@ -81,7 +81,7 @@ block_cons.fromNet.citizenDeal = function (peerid, block) {
  */
 
 // 元老院节点从数据层产生了block后，使用网络层上传给执政官
-block_cons.fromDigital.senateDeal = function(block) {
+block_cons.fromDigital.senateDeal = async function(block) {
     block = (typeof block === 'object') ? block : JSON.parse(block);
 
     // 1. 上传给执政官
@@ -91,7 +91,7 @@ block_cons.fromDigital.senateDeal = function(block) {
 };
 
 // 执政官从数据层产生block后，使用网络层下发给元老院
-block_cons.fromDigital.archonDeal = function(block) {
+block_cons.fromDigital.archonDeal = async function(block) {
     block = (typeof block === 'object') ? block : JSON.parse(block);
 
     // 1. 下达给元老院

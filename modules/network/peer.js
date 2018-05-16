@@ -13,6 +13,8 @@ import config from '../../config';
 import digital from '../digital';
 import consensus from '../consensus';
 
+import { promisify } from 'es6-promisify';
+
 
 class Peer {
     constructor() {
@@ -32,11 +34,13 @@ class Peer {
     }
 
     // 生成公钥、私钥，写入pem文件
-    __genKey() { 
+    async __genKey() { 
         console.log("generate KeyPair");
-        crypto.keys.generateKeyPair('RSA', config.rsaBits, (err, keys) => {
-            if(err) { throw err; }
-            // 打印私钥对象RsaPrivateKey
+        // 回调函数式方法promise化
+        const promiseGenKey = promisify(crypto.keys.generateKeyPair);
+        
+        try {
+            const keys = await promiseGenKey('RSA', config.rsaBits);
             console.log(keys)
 
             let privateKey = keys._key,
@@ -47,46 +51,46 @@ class Peer {
 
             fs.writeFileSync(config.rsaPrivateKey_path, privatePem);
             fs.writeFileSync(config.rsaPublicKey_path, publicPem);
-        })
+        } catch (err) {
+            console.log("generate KeyPair ERROR!!!")
+            throw err;
+        }
     }
 
-    __print(err) {
-        if (err) { throw err }
-
+    __print() {
         console.log("node has started (true/false): " + this.node.isStarted());
         console.log("listened on: ");
         this.node.peerInfo.multiaddrs.forEach((addr) => { console.log(addr.toString()) })
     }
 
-    start(callback) {
+    async start() {
         const privatePem = fs.readFileSync(config.rsaPrivateKey_path).toString();
+        
+        try {
+            const promiseKeysImport = promisify(crypto.keys.import);
+            const privKey = await promiseKeysImport(privatePem, '');
 
-        crypto.keys.import(privatePem, '', (err, privKey) => {
-            if(err) { throw err; }
+            const promisePublicHash = promisify(privKey.public.hash.bind(privKey.public));
+            const digest = await promisePublicHash()
+            
+            const id = new PeerId(digest, privKey);
 
-            privKey.public.hash((err, digest) => {
-                if(err) { throw err; }
+            const peerInfo = await promisify(PeerInfo.create)(id);
 
-                const id = new PeerId(digest, privKey);
-                
-                waterfall([
-                    (cb) => PeerInfo.create(id, cb),
-                    (peerInfo, cb) => {
-                        peerInfo.multiaddrs.add(`/ip4/${config.address}/tcp/${config.port}`)
-                        this.node = new p2p(peerInfo)
-                        this.node.start(cb);
+            peerInfo.multiaddrs.add(`/ip4/${config.address}/tcp/${config.port}`)
 
-                        this.registDiscover();
-                        
-                        this.registReceiveType('/record');
-                        this.registReceiveType('/block');
-                    }
-                ], (err) => {
-                    this.__print(err)
-                    callback()
-                })
-            })
-        }) 
+            this.node = new p2p(peerInfo)
+
+            this.registDiscover();
+            this.registReceiveType('/record');
+            this.registReceiveType('/block');
+
+            this.node.start(this.__print.bind(this));
+
+        } catch (err) {
+            console.log("import keys ERROR!!!")
+            throw err;
+        }
     }
 
     registDiscover() {
@@ -115,22 +119,6 @@ class Peer {
         })
     }
 
-    async emitSend(protocol, data) {  
-        console.log("emitSend: |-- type: %s, data: %s", protocol, data)
-        
-        switch (type) {
-            case 'record':
-                this.sendRecord(protocol, data);
-                break;
-            case 'block':
-                
-                break;
-        
-            default:
-                break;
-        }
-        
-    }
 
     sendData(conn, data) {
         try {
@@ -174,7 +162,7 @@ class Peer {
     
     async sendWhoTypeData(who, type, data) {
         who.forEach((peer) => {
-            this.node.dialProtocol(peer.multiaddr, type, (err, conn) => {
+            this.node.dialProtocol(peer.multiaddr, type, async (err, conn) => {
                 if (err) {
                     // 拨号不通，节点异常，数据库删除节点
                     const res = await digital.interface.toNet.removePeer(peer.peerid)

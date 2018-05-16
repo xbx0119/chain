@@ -2,7 +2,7 @@
  * 共识类
  */
 
-class Consensus {
+class CommonConsensus {
     constructor(name) {
         this.name = name;
 
@@ -38,4 +38,4 @@ class Consensus {
     }
 }
 
-export default Consensus;
+export default CommonConsensus;

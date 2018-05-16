@@ -1,6 +1,7 @@
 import config from './config';
 import network from './modules/network';
 import digital from './modules/digital';
+import consensus from './modules/consensus';
 
 import mongoose from 'mongoose';
 mongoose.Promise = global.Promise;
@@ -8,10 +9,10 @@ mongoose.Promise = global.Promise;
 const app = {
 
     start: function() {
-        this.dbConnect(function() {
-            network.start(function() {
-                digital.start()
-            })
+        this.dbConnect(async function() {
+            await network.start();
+            await digital.start();
+            await consensus.start();
         })
         
     },

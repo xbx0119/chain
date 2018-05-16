@@ -6,9 +6,9 @@
 import digital from '../digital';
 import network from '../network';
 
-import Consensus from './Consensus';
+import CommonConsensus from './CommonConsensus';
 
-const record_cons = new Consensus('record_cons');
+const record_cons = new CommonConsensus('record_cons');
 
 /**
  * 对来自网络层接收的record的共识--------------------------------------------------------------------------------

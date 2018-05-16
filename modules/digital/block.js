@@ -6,6 +6,7 @@ import record from './record';
 class Block {
     constructor() {
         this.list = [];
+        console.log("digital block constructor")
     }
 
     async produce() {

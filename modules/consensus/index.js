@@ -13,95 +13,102 @@ import Network from '../network';
 import RecordCons from './peer_cons';
 import BlockCons from './block_cons';
 import PeerCons from './peer_cons';
+import CommonConsensus from './CommonConsensus';
 
 
 
-const consensus = {
+class Consensus {
 
-    start: function() {
-        console.log("3. 共识层已启动");
+    constructor() {
+        this.interface = {
+            // 从网络层接收数据，处理后传递给数据层
+            deliverDataFromNet: async function (conn, type, data) {
+                const peer_type = Network.peer.type;
+                const peerinfo = await promisify(conn.getPeerInfo)();
+                const peerid = '';
 
-    },
+                if (peerinfo) {
+                    peerid = peerinfo.id.toB58String();
+                    console.log(peerid)
+                } else {
+                    throw "peerinfo get error"
+                }
 
-    interface: {
-        // 从网络层接收数据，处理后传递给数据层
-        deliverDataFromNet: async function (conn, type, data) {
-            const peer_type = Network.peer.type;
-            const peerinfo = await promisify(conn.getPeerInfo)();
-            const peerid = '';
 
-            if(peerinfo) {
-                peerid = peerinfo.id.toB58String();
-                console.log(peerid)
-            }else {
-                throw "peerinfo get error"
+                switch (type) {
+                    case 'record':
+                        console.log("deliverDataFromNet: |--  type: %s, data: %s", type, data);
+                        if (peer_type === 'citizen') {
+                            RecordCons.fromNet.citizenDeal(data);
+                        } else if (peer_type === 'senate') {
+                            RecordCons.fromNet.senateDeal(data);
+                        } else if (peer_type === 'archon') {
+                            RecordCons.fromNet.archonDeal(data);
+                        } else {
+                            RecordCons.fromNet.unSupportDeal('不支持的节点');
+                        }
+                        break;
+                    case 'block':
+                        console.log("deliverDataFromNet: |--  type: %s, data: %s", type, data);
+                        if (peer_type === 'archon') {
+                            BlockCons.fromNet.archonDeal(peerid, data);
+                        } else if (peer_type === 'senate') {
+                            BlockCons.fromNet.senateDeal(peerid, data)
+                        } else if (peer_type === 'citizen') {
+                            BlockCons.fromNet.citizenDeal(peerid, data);
+                        } else {
+                            BlockCons.fromNet.unSupportDeal('当前节点类型不支持接受record')
+                        }
+                        break;
+                    case 'peer':
+                        // 关于节点身份更新的消息，基于身份的共识基础
+                        console.log("待开发")
+                        break;
+                    default:
+                        console.log('不支持的消息类型');
+                        break;
+                }
+            },
+
+            // 从数据层接受数据，处理后传递给网络层
+            deliverDataFromDigital: function(data) {
+                const peer_type = Network.peer.type;
+
+                switch (type) {
+                    case 'record':
+                        RecordCons.fromDigital.citizenDeal(data);
+                        break;
+                    case 'block':
+                        if (peer_type === 'archon') {
+                            BlockCons.fromDigital.archonDeal(data);
+                        } else if (peer_type === 'senate') {
+                            BlockCons.fromDigital.senateDeal(data);
+                        } else if (peer_type === 'citizen') {
+                            BlockCons.fromDigital.unSupportDeal('公民节点不能产生block')
+                        } else {
+                            BlockCons.fromDigital.unSupportDeal('不支持的节点类型')
+                        }
+                        break;
+                    case 'peer':
+                        console.log('待开发')
+                        break;
+                    default:
+                        console.log('不支持的消息类型');
+                        break;
+                }
             }
-            
-            
-            switch (type) {
-                case 'record':
-                    console.log("deliverDataFromNet: |--  type: %s, data: %s", type, data);
-                    if(peer_type === 'citizen') {
-                        RecordCons.fromNet.citizenDeal(data);
-                    }else if(peer_type === 'senate') {
-                        RecordCons.fromNet.senateDeal(data);
-                    }else if(peer_type === 'archon') {
-                        RecordCons.fromNet.archonDeal(data);
-                    }else {
-                        RecordCons.fromNet.unSupportDeal('不支持的节点');
-                    } 
-                    break;
-                case 'block':
-                    console.log("deliverDataFromNet: |--  type: %s, data: %s", type, data);
-                    if (peer_type === 'archon') {
-                        BlockCons.fromNet.archonDeal(peerid, data);
-                    } else if (peer_type === 'senate') {
-                        BlockCons.fromNet.senateDeal(peerid, data)
-                    } else if(peer_type === 'citizen') {
-                        BlockCons.fromNet.citizenDeal(peerid, data);
-                    }else {
-                        BlockCons.fromNet.unSupportDeal('当前节点类型不支持接受record')
-                    }
-                    break;
-                case 'peer':
-                    // 关于节点身份更新的消息，基于身份的共识基础
-                    console.log("待开发")
-                    break;
-                default:
-                    console.log('不支持的消息类型');
-                    break;
-            }
-        },
-        
-        // 从数据层接受数据，处理后传递给网络层
-        deliverDataFromDigital: function(data) {
-            const peer_type = Network.peer.type;
 
-            switch (type) {
-                case 'record':
-                    RecordCons.fromDigital.citizenDeal(data);
-                    break;
-                case 'block':
-                    if (peer_type === 'archon') {
-                        BlockCons.fromDigital.archonDeal(data);
-                    }else if(peer_type === 'senate') {
-                        BlockCons.fromDigital.senateDeal(data);
-                    }else if(peer_type === 'citizen') {
-                        BlockCons.fromDigital.unSupportDeal('公民节点不能产生block')
-                    }else {
-                        BlockCons.fromDigital.unSupportDeal('不支持的节点类型')
-                    }
-                    break;
-                case 'peer':
-                    console.log('待开发')
-                    break;
-                default:
-                    console.log('不支持的消息类型');
-                    break;
-            }
         }
+
+        console.log("modules consensus constructor")
+    }
+
+    async start() {
+        console.log("3. 共识层已启动");
 
     }
 }
+
+const consensus = new Consensus();
 
 export default consensus;

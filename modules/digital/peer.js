@@ -1,4 +1,4 @@
-import PeersModel from '../../peersModel';
+import PeersModel from '../../models/peersModel';
 
 
 class Peer {
