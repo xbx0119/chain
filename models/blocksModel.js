@@ -37,13 +37,18 @@ BlocksModel.getAllBlocks = async function () {
 
 
 BlocksModel.maxHeight = async function () {
-    // const count = await Blocks.count({});
+    const lastBlock = await this.findLastBlock();
+
+    const height = lastBlock.height;
+    return height;
+}
+
+BlocksModel.findLastBlock = async function() {
     const last = await Blocks.aggregate([
         { $sort: { "height": -1 } },
         { $limit: 1 }
     ]);
-    const height = last[0].height;
-    return height;
+    return last[0];
 }
 
 export default BlocksModel;

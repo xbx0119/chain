@@ -1,3 +1,8 @@
+import hasha from 'hasha';
+import fs from 'fs';
+
+import config from '../../config';
+
 import BlockModel from '../../models/blocksModel';
 
 import record from './record';
@@ -16,23 +21,29 @@ class Block {
             // 头部结构
             version: this.__version(),
             timestamp: this.__timestamp(),
-            // 头哈希
-            blockhash: this.__blockhash(), 
             // 父哈希
-            parenthash: this.__parenthash(), 
-             // 交易hash
-            merkle: this.__merkle(),
-
+            parenthash: await this.__parenthash(), 
+            publicKey: this.__publicKey(),
             //区块主体，包含所有交易信息，即账本
-            records: this.__records()
+            records: this.__records()    
         }
+        // 交易hash
+        block.merkle = this.__merkle(block);
+        // 头哈希
+        // block.blockhash = this.__blockhash(block);
+        // 签名
+        // block.signature = this.__signature(block)
 
-        this.storeInDB(block)
         console.log("*****************")
         console.log(block)
         console.log("*****************")
 
         return block;
+    }        
+    
+
+    checkHash(block) {
+
     }
 
     addBlock2List(item) {
@@ -66,29 +77,75 @@ class Block {
     }
 
     __version() {
-        return 'test';    
+        return config.version;    
     }
 
     __timestamp() {
         return Date.now();    
     }
 
-    __blockhash() {
-        return 'test';    
-    }
+    async __parenthash() {
+        const lastBlock = await BlockModel.findLastBlock();
 
-    __parenthash() {
-        return 'test';    
-    }
-
-    __merkle() {
-        return 'test';    
+        return lastBlock.blockhash;
     }
 
     __records() {
         return record.getListValue();    
     }
+    
+    __merkle(block) {
+        if(block.records.length == 0) {
+            return '';
+        }
+
+        let hashArr = block.records.map((record) => {
+            return hasha([JSON.stringify(record)]);
+        })
+
+        while(hashArr.length != 1) {
+            let tmp = [];
+            for(let start = 0, length = hashArr.length; start < length; start+=2) {
+                let tmp_hash = '';
+                if(hashArr[start + 1]) {
+                    tmp_hash = hasha([hashArr[start], hashArr[start+1]]);
+                }else {
+                    tmp_hash = hasha([hashArr[start]]);
+                }
+                tmp.push(tmp_hash);
+            }
+            hashArr = tmp;
+        }
+
+        const markle = hashArr[0];
+        return markle;
+    }
+    
+    __blockhash(block) {
+        return hasha(JSON.stringify(block));
+    }
+
+    __publicKey() {
+        const publicKey = fs.readFileSync(config.rsaPublicKey_path).toString();
+        return publicKey;
+    }
+
+    __signature(block) {
+        const privateKey = fs.readFileSync(config.rsaPrivateKey_path);
+        const publicKey = fs.readFileSync(config.rsaPublicKey_path);
+
+        const ecdsa = jwa('RS256');
+
+        const signature = ecdsa.sign(block.blockhash, privateKey);
+
+        return signature;
+
+        // 验证签名
+        // ecdsa.verify(block.blockhash, signature, publicKey) // === true
+    }
 
 }
 
-export default new Block();
+const block = new Block();
+
+export default block;

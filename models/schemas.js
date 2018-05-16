@@ -22,20 +22,21 @@ var blocksSchema = new Schema({
     records: [{ 
         version: String,
         timestamp: String,
-        recipientId: String,
         senderId: String,
         senderPublicKey: String,
         hash: String,
         message: String,
         signature: String
-    }]
+    }],
+    publicKey: String,
+    signature: String
 });
 
 
 // 记录（交易）
 var recordsSchema = new Schema({
     hash: String,
-    record: String
+    record: String,
 });
 
 export default {

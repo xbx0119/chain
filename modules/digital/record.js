@@ -1,3 +1,5 @@
+import config from '../../config';
+
 import RecordsModel from '../../models/recordsModel';
 
 class Record {
@@ -65,7 +67,7 @@ class Record {
     
 
     __version() {
-        return 'test';
+        return config.version;
     }
 
     __timestamp() {

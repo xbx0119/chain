@@ -42,6 +42,10 @@ class Digital {
                 removePeer: this.Peer.removePeer
             },
 
+            API: {
+                
+            }
+
 
             // 对上层 网络层 提供的接口
         }

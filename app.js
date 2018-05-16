@@ -9,10 +9,19 @@ mongoose.Promise = global.Promise;
 const app = {
 
     start: function() {
-        this.dbConnect(async function() {
+        
+        this.dbConnect(async () => {
             await network.start();
             await digital.start();
             await consensus.start();
+
+            // 对外提供的api
+            this.api = {
+                setRecordData: () => {},
+                setSenate: () => {},
+                setArchon: () => {}
+            }
+
         })
         
     },
