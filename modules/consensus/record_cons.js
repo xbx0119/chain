@@ -17,6 +17,10 @@ const record_cons = new CommonConsensus('record_cons');
 // 元老院节点接受record存储
 record_cons.fromNet.senateDeal = function(record) {
     console.log("元老院处理record")
+    // 检查合法性
+    const legal = digital.interface.toConsensus.record.checkSignatureThenHash(record);
+    if(!legal) { return false; }
+
     // record存入队列， 按hash标识唯一性，队列属性key/value：hash/record
     record = (typeof record === 'object') ? record : JSON.parse(record);
     const item = {
@@ -32,6 +36,10 @@ record_cons.fromNet.citizenDeal = async function(record) {
     console.log("公民处理record")
     record = (typeof record === 'object') ? record : JSON.parse(record);
 
+    // 检查合法性
+    const legal = digital.interface.toConsensus.record.checkSignatureThenHash(record);
+    if (!legal) { return false; }
+
     // 1. 检测数据库是否存在此记录，存在则忽略返回，不存在则处理
     const exist = await digital.interface.toConsensus.record.isExistedInDB(record.hash);
     if(exist) { return; }
@@ -42,10 +50,6 @@ record_cons.fromNet.citizenDeal = async function(record) {
     // 3. 转发给其他公民节点
     if(store) {
         const citizenPeers = await digital.interface.toConsensus.peer.getPeersByType('citizen');
-
-        /**
-         * 网络层待实现功能sendWhoTypeData！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
-         */
         network.interface.toConsensus.sendWhoTypeData(citizenPeers, 'record', JSON.stringify(record))
     }
 };
@@ -54,6 +58,7 @@ record_cons.fromNet.citizenDeal = async function(record) {
 record_cons.fromNet.archonDeal = function() {
     console.log("当前节点类型: archon不支持接受record")
 };
+
 
 
 /**

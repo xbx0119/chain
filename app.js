@@ -3,6 +3,8 @@ import network from './modules/network';
 import digital from './modules/digital';
 import consensus from './modules/consensus';
 
+import colors from 'colors';
+
 import mongoose from 'mongoose';
 mongoose.Promise = global.Promise;
 
@@ -22,6 +24,9 @@ const app = {
                 setArchon: () => {}
             }
 
+            
+            console.log(colors.green.bold("peer is running as %s"), global.peerType)
+
         })
         
     },
@@ -35,7 +40,7 @@ const app = {
             keepAlive: true
         }).then(
             () => { 
-                console.log("0. 数据库已连接"); 
+                console.log(colors.green("0. 数据库已连接"))
                 start_process()
             },
             (err) => { console.log("0. 数据库连接失败"+err); }

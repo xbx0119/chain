@@ -1,9 +1,22 @@
 {
     "height": 1,
-    "version": "1.0",
+    "version": "0.0.1",
     "timestamp": 0,
-    "blockhash": "1",
-    "parenthash": "0",
-    "merkle": "0",
-    "records": []
+    "parenthash": "",
+    "senderId": "QmcHUWf1YemBYrezctp6cSyZpSAANz2deFb9As3EMZnuXf",
+    "publicKey": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtENe2jxrOnmCT0UP9xsC\n2W9+T6wgWNE0PV/fmQGP+vICgJkzKp8XdHV1QDjvO2Y3G5sSWvBSqKjmPFs2yLIY\n1ERAL7iYnkGwh1oZ52qws4RzfJcTB8bbXjfSJDfjk4b6NoJbH/brVPk/iGGjGpL9\nKLmKbB90r1mQn3cW97vpR5XfpyFLa12BnpA7XBs3IelYtgSCypvI1jcaofIPSnYQ\n3CLHAfFmiEwuy7gzKAZvgTEy5OHH2yE+JS2S82SSG3rgJLKKLRGXVEjSlKGznWyg\nvx7vXh40NMnoUA9ba8GPe/ygJJZmj+igSJ8Z+yNSjr8tIN8OE1tFfLXEgANT0E9V\nBwIDAQAB\n-----END PUBLIC KEY-----\n",
+    "records": [
+        {
+            "version": "0.0.1",
+            "timestamp": 0,
+            "senderId": "QmcHUWf1YemBYrezctp6cSyZpSAANz2deFb9As3EMZnuXf",
+            "publicKey": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtENe2jxrOnmCT0UP9xsC\n2W9+T6wgWNE0PV/fmQGP+vICgJkzKp8XdHV1QDjvO2Y3G5sSWvBSqKjmPFs2yLIY\n1ERAL7iYnkGwh1oZ52qws4RzfJcTB8bbXjfSJDfjk4b6NoJbH/brVPk/iGGjGpL9\nKLmKbB90r1mQn3cW97vpR5XfpyFLa12BnpA7XBs3IelYtgSCypvI1jcaofIPSnYQ\n3CLHAfFmiEwuy7gzKAZvgTEy5OHH2yE+JS2S82SSG3rgJLKKLRGXVEjSlKGznWyg\nvx7vXh40NMnoUA9ba8GPe/ygJJZmj+igSJ8Z+yNSjr8tIN8OE1tFfLXEgANT0E9V\nBwIDAQAB\n-----END PUBLIC KEY-----\n",
+            "message": "this is a message in genesisblock",
+            "hash": "6ba6434cbf730885c6814ce56bab49bc3cb67239ff7c5bcefdcf90704fc3cdc8391e6463960d7b983881582e091a17c0ea65f8530050c542c191da448ce6ba2b",
+            "signature": "gxzzgrmHvHoykumvrCYadnJfzFSBODviMHhGS2qXErK_8O6F3E1PN9fJ95rWeQVimzfgJ1A6VCnubHf7RHCOQmAHrCfyu-vye4m9g7k5D96T77pbxuvPLIuUuNxrhsWsn6UCKJW4MAvHT7vSIcRIAYkmPjjvR7yr5iW7ZAlzrW5b6GKmo2vvhNzTj2ihIilhLqSkhjfom7TZDj0UtwQavXhBM8TL3fRZIXitwZizXqrb6Mo9tnzvcgPfmkcAubbV-G7Fd0EWViMkkTSGfJYzA8MvuWFMpdRQqai5JOzfFsFqmHokHDjpxx5TY38xnUcHxqaQzUGulRcBKkyffq86Cg"
+        }
+    ],
+    "merkle": "f5fe3216f84c0834867792aaa0e0168c383f23129cf109e736cfede31f5cce1c820f9ebb01828bf6b771d8a19fc1a3de1d6058e0d3a1bb7691bf49e6faec5cdb",
+    "blockhash": "62928101d5b9d8ee67588bc651a4bc71469d736255abe693c6ff4a84b99146b58e5cd394a383d86e46223b82d0f80ec51ed10e51f2785d0d3418e592e22db01f",
+    "signature": "DYGgd9-gYMM-vtZgFEWHm67Sb4k2uEsXq7iLHN72CPmAW1oWOsOEaee-9K5UbGK3pvKBoISfdHj1t2tdIbZ_dIExusRcy5JkoESZAkFJAnTgK2IPK25eloZd30PrXuqlLP6uMibqofDZhA_E0ZnB7Tq0bhF0-iOxFhTWV9pUfIJv7RV6ICcM3uobuPKADL0y1ZLeZAO2IA2tI8asFFXfuokckokvfqp8G17E3QUSOIH_j7c7_FfYBhg7xJh_SY9BRd2rmSXA8KFru2N8Aqg_9QFh906vtcKh13GM_kO1CYOtKut-cA5FLsjnR8jnbrbag_LaU38yhhvqARtDSnpT9A"
 }

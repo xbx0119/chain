@@ -5,6 +5,19 @@ const Blocks = mongoose.model('blocks', Schemas.blocksSchema);
 
 const BlocksModel = {};
 
+BlocksModel.insertGenesisBlock = async function(block) {
+    const count = await Blocks.count({});
+    if(count === 0) {
+        const res = await Blocks.create(block);
+        return res;
+    }else {
+        console.log("创世区块已存在")
+        return false;
+    }
+
+
+}
+
 BlocksModel.addBlock = async function (data) {
     console.log(data)
     const block = await Blocks.findOne({ height: +data.height });

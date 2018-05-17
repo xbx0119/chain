@@ -1,3 +1,7 @@
+import hasha from 'hasha';
+import fs from 'fs';
+import jwa from 'jwa';
+
 import config from '../../config';
 
 import RecordsModel from '../../models/recordsModel';
@@ -9,16 +13,17 @@ class Record {
     }
 
     produce() {
-        return {
+        const record = {
             version: this.__version(),
             timestamp: this.__timestamp(),
-            recipientId: this.__recipientId(),
             senderId: this.__senderId(),
-            senderPublicKey: this.__senderPublicKey(),
-            hash: this.__hash(),
+            publicKey: this.__publicKey(),
             message: this.__message(),
-            signature: this.__signature()
         }
+        record.hash = this.__hash();
+        record.signature = this.__signature();
+
+        return record;
     }
 
     addRecord2List(item) {
@@ -48,6 +53,26 @@ class Record {
         this.list = [];
     }
 
+    checkSignatureThenHash(record) {
+        record = (typeof record === 'object') ? record : JSON.parse(record);
+        const ecdsa = jwa('RS256');
+        // 验证签名
+        const flag = ecdsa.verify(record.hash, record.signature, record.publicKey);
+        if(flag) {
+            // 验证签名通过,验证hash合法性
+            const tmp = Object.assign({}, record);
+            delete tmp.signature; delete tmp.hash;
+            const hash = hasha(JSON.stringify(tmp));
+            if (hash === record.hash) {
+                return true;
+            } else {
+                return false;
+            }
+        }else {
+            return false;
+        }
+    }
+
     // 检测数据库是否存在记录，标识已经处理过
     async isExistedInDB(hash) {
         return await RecordsModel.isExisted(hash);
@@ -64,8 +89,6 @@ class Record {
     }
 
 
-    
-
     __version() {
         return config.version;
     }
@@ -74,30 +97,36 @@ class Record {
         return Date.now();
     }
 
-    __recipientId() {
-        return 'test';
-    }
-
     __senderId() {
-        return 'test';
+        // peer.start()中绑定到global上
+        return global.peerid;
     }
 
-    __senderPublicKey() {
-        return 'test';
+    __publicKey() {
+        const publicKey = fs.readFileSync(config.rsaPublicKey_path).toString();
+        return publicKey;
     }
-
-    __hash() {
-        return 'test';
-    }
-
+    
     __message() {
         return 'test';
     }
 
-    __signature() {
-        return 'test';
+    __hash(record) {
+        return hasha(JSON.stringify(record));
     }
 
-    
+    __signature(record) {
+        const 
+            privateKey = fs.readFileSync(config.rsaPrivateKey_path),
+            publicKey = fs.readFileSync(config.rsaPublicKey_path),
+            ecdsa = jwa('RS256');
+
+        const signature = ecdsa.sign(record.hash, privateKey);
+        return signature;
+    }
+
 }
-export default new Record();
+
+const record = new Record();
+
+export default record;

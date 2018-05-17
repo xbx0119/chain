@@ -3,7 +3,9 @@ import PeersModel from '../../models/peersModel';
 
 class Peer {
     constructor() {
+        global.peerType = 'senate'; // 统一成为公民节点
 
+        console.log("digital peer constructor")
     }
 
     async addPeer(peerid, multiaddr) {
@@ -32,7 +34,6 @@ class Peer {
         if(res) { return true; }
         else { return false; }
     }
-
 
 }
 

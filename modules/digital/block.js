@@ -1,5 +1,6 @@
 import hasha from 'hasha';
 import fs from 'fs';
+import jwa from 'jwa';
 
 import config from '../../config';
 
@@ -17,10 +18,10 @@ class Block {
     async produce() {
         const block =  {
             height: await this.__height(),
-
             // 头部结构
             version: this.__version(),
             timestamp: this.__timestamp(),
+            senderId: this.__senderId(),
             // 父哈希
             parenthash: await this.__parenthash(), 
             publicKey: this.__publicKey(),
@@ -30,20 +31,68 @@ class Block {
         // 交易hash
         block.merkle = this.__merkle(block);
         // 头哈希
-        // block.blockhash = this.__blockhash(block);
+        block.blockhash = this.__blockhash(block);
         // 签名
-        // block.signature = this.__signature(block)
+        block.signature = this.__signature(block)
 
-        console.log("*****************")
-        console.log(block)
-        console.log("*****************")
-
+        console.log(JSON.stringify(block))
         return block;
-    }        
+    } 
+    
+    // 执政官裁决区块列表,选出最终入链的区块
+    async ruleBlock() {
+        if(this.list.length === 0) {
+            console.log("archon: blocklist.length = 0, abandon")
+            return false;
+        }
+
+        // 固定当前列表,防止期间新的区块进入列表
+        const currentList = this.list;
+        this.clearList();
+        
+        // 选择策略: 按records数量从高到低排序,取中间数
+        currentList.sort((a, b) => {
+            return b.records.length - a.records.length;
+        });
+
+        // 如果最大records数量都为0,则抛弃所有区块
+        if(currentList[0].records.length === 0) {
+            console.log("max records.length 0, abandon!!!")
+            return false;
+        }
+
+        // 选择中间数
+        const pos = Math.ceil(currentList.length / 2) - 1;
+        const block = currentList[pos];
+
+        const res = await this.storeInDB(block);
+        if(res) {
+            return block;
+        }else {
+            console.log("ruleBlock error!!!!!!")
+            return false;
+        }            
+    }
     
 
-    checkHash(block) {
-
+    checkSignatureThenHash(block) {
+        block = (typeof block === 'object') ? block : JSON.parse(block);
+        const ecdsa = jwa('RS256');
+        // 验证签名
+        const flag = ecdsa.verify(block.blockhash, block.signature, block.publicKey);
+        if(flag) {
+            // 签名通过,验证hash是否合法
+            const tmp = Object.assign({}, block);
+            delete tmp.signature; delete tmp.blockhash;
+            const hash = hasha(JSON.stringify(tmp));
+            if (hash === block.blockhash) {
+                return true;
+            } else {
+                return false;
+            }
+        }else {
+            return false;
+        }
     }
 
     addBlock2List(item) {
@@ -51,6 +100,9 @@ class Block {
         this.list.push(item);
     }
 
+    clearList() {
+        this.list = [];
+    }
 
     // 存储区块到数据库
     // 存在之前的区块没有同步过来的情况，即当前数据库最大height不等于收到的block的height-1
@@ -82,6 +134,11 @@ class Block {
 
     __timestamp() {
         return Date.now();    
+    }
+
+    __senderId() {
+        // peer.start()中绑定到global上
+        return global.peerid;
     }
 
     async __parenthash() {
@@ -117,17 +174,17 @@ class Block {
             hashArr = tmp;
         }
 
-        const markle = hashArr[0];
-        return markle;
-    }
-    
-    __blockhash(block) {
-        return hasha(JSON.stringify(block));
+        const merkle = hashArr[0];
+        return merkle;
     }
 
     __publicKey() {
         const publicKey = fs.readFileSync(config.rsaPublicKey_path).toString();
         return publicKey;
+    }
+    
+    __blockhash(block) {
+        return hasha(JSON.stringify(block));
     }
 
     __signature(block) {
@@ -139,9 +196,6 @@ class Block {
         const signature = ecdsa.sign(block.blockhash, privateKey);
 
         return signature;
-
-        // 验证签名
-        // ecdsa.verify(block.blockhash, signature, publicKey) // === true
     }
 
 }

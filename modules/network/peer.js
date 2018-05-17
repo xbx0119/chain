@@ -19,7 +19,6 @@ import { promisify } from 'es6-promisify';
 class Peer {
     constructor() {
         this.node = null;
-        this.type = 'citizen'; // 统一成为公民节点
 
         if (!this.__hasKey()) {
             this.__genKey();
@@ -74,6 +73,7 @@ class Peer {
             const digest = await promisePublicHash()
             
             const id = new PeerId(digest, privKey);
+            global.peerid = id.toB58String();
 
             const peerInfo = await promisify(PeerInfo.create)(id);
 
@@ -168,7 +168,7 @@ class Peer {
                     const res = await digital.interface.toNet.removePeer(peer.peerid)
                     if (res) console.log("节点异常，删除成功")
 
-                    // 若元老院节点或执政官节点异常,实行其他措施选举新节点
+                    // 若元老院节点或执政官节点异常,实行其他措施选举新节点,待实现!!!!!!!!!!!!!
                     // code
 
 

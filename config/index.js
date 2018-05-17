@@ -8,7 +8,6 @@ import configUser from './config.user.js';
 let config = {};
 Object.assign(config, configDefault, configUser);
 
-console.log(JSON.stringify(config))
 console.log()
 
 

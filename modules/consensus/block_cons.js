@@ -24,6 +24,11 @@ const block_cons = new CommonConsensus('block_cons');
 // 执政官节点接受元老院提交的block进行裁决
 block_cons.fromNet.archonDeal = async function(peerid, block) {
     block = (typeof block === 'object') ? block : JSON.parse(block);
+
+    // 检查合法性
+    const legal = digital.interface.toConsensus.block.checkSignatureThenHash(block);
+    if (!legal) { return false; }
+
     // 1. 验证发送人是否是元老院节点
     const fromSenate = await digital.interface.toConsensus.peer.checkPeerType(peerid, 'senate');
 
@@ -43,6 +48,11 @@ block_cons.fromNet.archonDeal = async function(peerid, block) {
 // 注意还需要判定消息是否真的来自于执政官
 block_cons.fromNet.senateDeal = async function (peerid, block) {
     block = (typeof block === 'object') ? block : JSON.parse(block);
+
+    // 检查合法性
+    const legal = digital.interface.toConsensus.block.checkSignatureThenHash(block);
+    if (!legal) { return false; }
+
     // 1. 鉴定是否是执政官节点下达的
     const fromArchon = await digital.interface.toConsensus.peer.checkPeerType(peerid, 'archon');
 
@@ -62,10 +72,14 @@ block_cons.fromNet.senateDeal = async function (peerid, block) {
 // 公民节点收到元老院公布的决策区块
 // 公民节点接受来自元老院的block，鉴定后负责存储
 block_cons.fromNet.citizenDeal = async function (peerid, block) {
-    // 1. 鉴定是否是元老院公布的
     block = (typeof block === 'object') ? block : JSON.parse(block);
-    // 1. 鉴定是否是执政官节点下达的
-    const fromSenate = await digital.interface.toConsensus.peer.checkPeerType(peerid, 'archon');
+
+    // 检查合法性
+    const legal = digital.interface.toConsensus.block.checkSignatureThenHash(block);
+    if (!legal) { return false; }
+
+    // 1. 鉴定是否是元老院公布的
+    const fromSenate = await digital.interface.toConsensus.peer.checkPeerType(peerid, 'senate');
 
     if(fromSenate) {
         // 2. 存储进入数据库

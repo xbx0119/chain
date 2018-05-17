@@ -15,6 +15,8 @@ import BlockCons from './block_cons';
 import PeerCons from './peer_cons';
 import CommonConsensus from './CommonConsensus';
 
+import colors from 'colors';
+
 
 
 class Consensus {
@@ -23,7 +25,7 @@ class Consensus {
         this.interface = {
             // 从网络层接收数据，处理后传递给数据层
             deliverDataFromNet: async function (conn, type, data) {
-                const peer_type = Network.peer.type;
+                const peer_type = global.peerType;
                 const peerinfo = await promisify(conn.getPeerInfo)();
                 const peerid = '';
 
@@ -33,7 +35,6 @@ class Consensus {
                 } else {
                     throw "peerinfo get error"
                 }
-
 
                 switch (type) {
                     case 'record':
@@ -50,6 +51,13 @@ class Consensus {
                         break;
                     case 'block':
                         console.log("deliverDataFromNet: |--  type: %s, data: %s", type, data);
+                        data = (typeof data === 'object') ? data : JSON.parse(data);
+                        // 区块中records为空,抛弃该区块
+                        if(data.records.length === 0) { 
+                            console.log("区块records为空,不执行后续操作");
+                            break;
+                        }
+ 
                         if (peer_type === 'archon') {
                             BlockCons.fromNet.archonDeal(peerid, data);
                         } else if (peer_type === 'senate') {
@@ -71,8 +79,8 @@ class Consensus {
             },
 
             // 从数据层接受数据，处理后传递给网络层
-            deliverDataFromDigital: function(data) {
-                const peer_type = Network.peer.type;
+            deliverDataFromDigital: function(type, data) {
+                const peer_type = global.peerType;
 
                 switch (type) {
                     case 'record':
@@ -104,8 +112,7 @@ class Consensus {
     }
 
     async start() {
-        console.log("3. 共识层已启动");
-
+        console.log(colors.green("3. 共识层已启动"))
     }
 }
 

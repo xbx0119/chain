@@ -16,7 +16,7 @@ if [ ! -f "$file_userConfig" ]; then
 fi
 
 # 数据库插入创世区块
-blocks=`mongo chain -u root -p 806119 --authenticationDatabase "admin" --eval "db.blocks.find({})" --quiet`
+blocks=`mongo chain -u root -p 0119 --authenticationDatabase "admin" --eval "db.blocks.find({})" --quiet`
 if [ "$blocks" = "" ]; then
     mongo chain -u root -p 806119 --authenticationDatabase "admin" --eval "db.blocks.insert($genesisBlock)" --quiet
     echo "创世区块创建成功"

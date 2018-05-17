@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "setup": "./bin/setup.sh",
+    "setup": "babel-node ./bin/setup.js",
     "start": "babel-node ./bin/chain.js",
     "build": "babel src --out-dir lib",
     "prod": "pm2 start ./pm2.config.json",
@@ -16,6 +16,7 @@
   "license": "ISC",
   "dependencies": {
     "async": "^2.6.0",
+    "colors": "^1.2.5",
     "es6-promisify": "^6.0.0",
     "hasha": "^3.0.0",
     "jwa": "^1.1.6",

@@ -16,19 +16,20 @@ var blocksSchema = new Schema({
     height: Number,
     version: String,
     timestamp: String,
-    blockhash: String,
+    senderId: String,
     parenthash: String,
-    merkle: String,
     records: [{ 
         version: String,
         timestamp: String,
         senderId: String,
-        senderPublicKey: String,
-        hash: String,
+        publicKey: String,
         message: String,
+        hash: String,
         signature: String
     }],
     publicKey: String,
+    merkle: String,
+    blockhash: String,
     signature: String
 });
 

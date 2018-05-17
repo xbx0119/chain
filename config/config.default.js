@@ -15,11 +15,14 @@ const config = {
     address: "0.0.0.0",
 
     // 数据库配置
-    db_host: '',
-    db_name: '',
-    db_user: '',
-    db_passwd: '',
+    db_host: 'localhost',
+    db_name: 'chain',
+    db_user: 'root',
+    db_passwd: '806119',
 
+
+    // 产生区块的时间间隔,单位:秒
+    produceBlockGap: 10,
 
 
     // 已知的节点列表
