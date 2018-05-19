@@ -1,4 +1,25 @@
 
+
+
+``` bash
+
+git clone git@github.com:shellChain/chain.git
+cd chain
+git submodule init
+
+# 更新子模块为远程项目的最新版本
+git submodule update
+
+# 更新子模块为远程项目的最新版本
+git submodule update --remote
+
+# 以后每次更新子模块
+# 拉取服务器代码，并且合并到本地分支
+git submodule update --remote --merge
+
+```
+
+
 * modules
     * data 数据层
         * 数据区块

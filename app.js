@@ -2,14 +2,9 @@ import config from './config';
 import network from './modules/network';
 import digital from './modules/digital';
 import consensus from './modules/consensus';
+import gui from './gui';
 
 import colors from 'colors';
-
-// gui
-import Koa from 'koa';
-import Router from 'koa-router';
-import cors from '@koa/cors';
-import bodyParser from 'koa-bodyparser';
 
 
 import mongoose from 'mongoose';
@@ -56,38 +51,7 @@ const app = {
     },
 
     startGUI: function () {
-        var gui = new Koa();
-        gui.use(cors());
-        gui.use(bodyParser());
-
-        var router = new Router();
-        router.get('/', (ctx, next) => {
-            ctx.body = 'this is api';
-        });
-        router.post('/api/createRecord', async (ctx, next) => {
-            const message = ctx.request.body.message;
-            console.log(message)
-            if(!message) {
-                ctx.body = false;
-            }
-
-            const record = await digital.interface.api.createRecord(message);
-            ctx.body = record;
-        });
-        router.get('/api/getBlocks', async (ctx, next) => {
-            const 
-                page = ctx.request.query.page,
-                size = ctx.request.query.size;
-
-            const blocks = await digital.interface.api.getBlocks(page, size);
-            ctx.body = blocks;
-        });
-
-        gui
-            .use(router.routes())
-            .use(router.allowedMethods());
-
-        gui.listen(config.ui_port, () => { 
+        gui.listen(config.ui_port, () => {
             console.log(colors.green.bold("gui is running on port %s"), config.ui_port)
         });
     }
