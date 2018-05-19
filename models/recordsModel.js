@@ -6,10 +6,8 @@ const Records = mongoose.model('records', Schemas.recordsSchema);
 const RecordsModel = {};
 
 RecordsModel.addRecord = async function (data) {
-    console.log(data)
     const res = await Records.create(data);
     if (res) {
-        console.log("add: %s", res)
         return true;
     } else {
         return false;

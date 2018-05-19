@@ -10,7 +10,7 @@
 import { promisify } from 'es6-promisify';
 
 import Network from '../network';
-import RecordCons from './peer_cons';
+import RecordCons from './record_cons';
 import BlockCons from './block_cons';
 import PeerCons from './peer_cons';
 import CommonConsensus from './CommonConsensus';

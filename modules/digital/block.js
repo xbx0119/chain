@@ -4,7 +4,7 @@ import jwa from 'jwa';
 
 import config from '../../config';
 
-import BlockModel from '../../models/blocksModel';
+import BlocksModel from '../../models/blocksModel';
 
 import record from './record';
 
@@ -111,7 +111,7 @@ class Block {
     async storeInDB(block) {
         // some code
         block = (typeof block == 'object') ? block : JSON.parse(block);
-        const res = await BlockModel.addBlock(block);
+        const res = await BlocksModel.addBlock(block);
         console.log(res)
         if(res) {
             console.log("store block to database");
@@ -124,7 +124,7 @@ class Block {
 
 
     async __height() {
-        const height = await BlockModel.maxHeight();
+        const height = await BlocksModel.maxHeight();
         return height + 1;    
     }
 
@@ -142,7 +142,7 @@ class Block {
     }
 
     async __parenthash() {
-        const lastBlock = await BlockModel.findLastBlock();
+        const lastBlock = await BlocksModel.findLastBlock();
 
         return lastBlock.blockhash;
     }
@@ -196,6 +196,11 @@ class Block {
         const signature = ecdsa.sign(block.blockhash, privateKey);
 
         return signature;
+    }
+
+    async getBlocks(page, size) {
+        const blocks = await BlocksModel.getBlocks(page, size);
+        return blocks;
     }
 
 }

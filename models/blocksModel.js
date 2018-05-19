@@ -43,8 +43,14 @@ BlocksModel.removeBlock = async function (height) {
 }
 
 
-BlocksModel.getAllBlocks = async function () {
-    const blocks = await Blocks.find({});
+BlocksModel.getBlocks = async function (page, size) {
+    page = +page || 1;
+    size = +size || 50;
+    const blocks = await Blocks.aggregate([
+        { $sort: { "height": -1 } },
+        { $skip: (page - 1) * size},
+        { $limit: size }
+    ]);
     return blocks;
 }
 

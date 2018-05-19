@@ -5,6 +5,13 @@ import consensus from './modules/consensus';
 
 import colors from 'colors';
 
+// gui
+import Koa from 'koa';
+import Router from 'koa-router';
+import cors from '@koa/cors';
+import bodyParser from 'koa-bodyparser';
+
+
 import mongoose from 'mongoose';
 mongoose.Promise = global.Promise;
 
@@ -25,7 +32,8 @@ const app = {
             }
 
             
-            console.log(colors.green.bold("peer is running as %s"), global.peerType)
+            console.log(colors.green.bold("peer is running as [ %s ]"), global.peerType)
+            this.startGUI()
 
         })
         
@@ -45,6 +53,43 @@ const app = {
             },
             (err) => { console.log("0. 数据库连接失败"+err); }
         );
+    },
+
+    startGUI: function () {
+        var gui = new Koa();
+        gui.use(cors());
+        gui.use(bodyParser());
+
+        var router = new Router();
+        router.get('/', (ctx, next) => {
+            ctx.body = 'this is api';
+        });
+        router.post('/api/createRecord', async (ctx, next) => {
+            const message = ctx.request.body.message;
+            console.log(message)
+            if(!message) {
+                ctx.body = false;
+            }
+
+            const record = await digital.interface.api.createRecord(message);
+            ctx.body = record;
+        });
+        router.get('/api/getBlocks', async (ctx, next) => {
+            const 
+                page = ctx.request.query.page,
+                size = ctx.request.query.size;
+
+            const blocks = await digital.interface.api.getBlocks(page, size);
+            ctx.body = blocks;
+        });
+
+        gui
+            .use(router.routes())
+            .use(router.allowedMethods());
+
+        gui.listen(config.ui_port, () => { 
+            console.log(colors.green.bold("gui is running on port %s"), config.ui_port)
+        });
     }
 
 }

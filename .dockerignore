@@ -1,0 +1,9 @@
+.git
+node_modules
+npm-debug.log
+
+logs/
+
+config/chain_rsa
+config/chain_rsa.pub
+config/config.user.js

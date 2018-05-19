@@ -12,17 +12,16 @@ class Record {
         console.log("digital record constructor")
     }
 
-    produce() {
+    produce(message) {
         const record = {
             version: this.__version(),
             timestamp: this.__timestamp(),
             senderId: this.__senderId(),
             publicKey: this.__publicKey(),
-            message: this.__message(),
+            message: this.__message(message),
         }
-        record.hash = this.__hash();
-        record.signature = this.__signature();
-
+        record.hash = this.__hash(record);
+        record.signature = this.__signature(record);
         return record;
     }
 
@@ -88,7 +87,6 @@ class Record {
         else { return false; }
     }
 
-
     __version() {
         return config.version;
     }
@@ -107,8 +105,9 @@ class Record {
         return publicKey;
     }
     
-    __message() {
-        return 'test';
+    __message(message) {
+        message = (typeof message === 'string') ? message : JSON.stringify(message);
+        return message;
     }
 
     __hash(record) {

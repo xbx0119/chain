@@ -47,8 +47,21 @@ class Digital {
                 removePeer: this.Peer.removePeer
             },
 
-            API: {
+            // 对外提供的Api
+            api: {
+                getBlocks: this.Block.getBlocks,
                 
+                getPeers: () => {},
+
+                createRecord: async (message) => {
+                    const record = await this.Record.produce(message);
+                    console.log("api createRecord: %s", JSON.stringify(record));
+                    Consensus.interface.deliverDataFromDigital('record', record);
+                    return record;
+                },
+
+                voteArchon: () => {},
+                voteSenate: () => {}
             }
 
 

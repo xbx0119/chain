@@ -3,7 +3,7 @@ import PeersModel from '../../models/peersModel';
 
 class Peer {
     constructor() {
-        global.peerType = 'senate'; // 统一成为公民节点
+        global.peerType = 'citizen'; // 统一成为公民节点
 
         console.log("digital peer constructor")
     }

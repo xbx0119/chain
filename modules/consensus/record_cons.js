@@ -2,7 +2,7 @@
  * 交易记录共识
  * 依据节点类型对交易记录做相应处理
  */
-
+import colors from 'colors';
 import digital from '../digital';
 import network from '../network';
 
@@ -66,8 +66,8 @@ record_cons.fromNet.archonDeal = function() {
  */
 
 // 数据层产生了record交易信息，每个节点作为公民都可以产生交易，只需要转发给其他公民节点、上传给元老院节点即可
-record_cons.fromDigital.citizenDeal = function(record) {
-    console.log("公民处理产生的交易")
+record_cons.fromDigital.citizenDeal = async function(record) {
+    console.log(colors.yellow("公民处理api接收到的record"))
     record = (typeof record === 'object') ? record : JSON.parse(record);
 
     // 1. 上传给元老节点

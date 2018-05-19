@@ -95,11 +95,11 @@ class Peer {
 
     registDiscover() {
         this.node.on('peer:discovery', (peer) => {
-            console.log("discovery: ", peer.id.toB58String())
+            // console.log("discovery: ", peer.id.toB58String())
             // 连接节点
             this.node.dial(peer, (err, conn) => { 
                 if(err) {
-                    console.log("节点不通");
+                    // console.log("节点不通");
                 }else {
                     this.__addPeer(peer)
                 }
