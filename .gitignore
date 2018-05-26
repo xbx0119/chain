@@ -7,3 +7,5 @@ config/chain_rsa
 config/chain_rsa.pub
 config/config.user.js
 config/bk/
+
+package-lock.json

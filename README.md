@@ -1,5 +1,11 @@
+# chain
+
+### introduction
+Nodejs v8.10+
+MongoDB
 
 
+### install & run
 
 ``` bash
 
@@ -19,23 +25,11 @@ git submodule update --remote --merge
 
 ```
 
-
+### structure
 * modules
-    * data 数据层
-        * 数据区块
-        * 链式结构
-        * 时间戳
-        * 哈希函数
-        * Merkle树
-        * 非对称加密
+    * digital 数据层
     * network 网络层
-        * p2p网络
-        * 传播机制
-        * 验证机制
     * consensus 共识层
-        * POW
-        * POS
-        * DPOS
     * excitation 激励层
         * 发行机制
         * 分配机制
@@ -43,3 +37,7 @@ git submodule update --remote --merge
         * 脚本代码
         * 算法机制
         * 智能合约
+
+
+### docker
+每个容器只做一件事情
