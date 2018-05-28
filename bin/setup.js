@@ -27,12 +27,17 @@ function __createUserConfig() {
 
 async function __insertGenesisBlock() {
     const dbURL = `mongodb://${config.db_host}/${config.db_name}`;
-    await mongoose.connect(dbURL, {
-        user: config.db_user,
-        pass: config.db_passwd,
-        auth: { authdb: 'admin' },
+
+    const options = {
         keepAlive: true
-    }).then(
+    };
+    if (config.db_user) { 
+        options.user = config.db_user; 
+        options.pass = config.db_passwd;
+        options.auth = { authdb: 'admin' };
+    }
+
+    await mongoose.connect(dbURL, options).then(
         async () => {
             console.log("创建创世区块......");
             // 插入创世区块
