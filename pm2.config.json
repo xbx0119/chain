@@ -2,7 +2,7 @@
     "apps": [
         {
             "name": "chain",
-            "script": "./bin/chain",
+            "script": "./bin/chain.js",
             "cwd": "./",
             "instances": 1,
             "exec_mode": "cluster",

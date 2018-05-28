@@ -57,7 +57,7 @@ block_cons.fromNet.senateDeal = async function (peerid, block) {
     const fromArchon = await digital.interface.toConsensus.peer.checkPeerType(peerid, 'archon');
 
     if (fromArchon) {
-        // 2. 将提案区块存储数据库
+        // 2. 将决策区块存储数据库
         const store = await digital.interface.toConsensus.block.storeInDB(block);
         
         // 3. 提取区块中的交易信息，与record列表中的交易比对，排除已经进入区块的record
