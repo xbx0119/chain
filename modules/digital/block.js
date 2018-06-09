@@ -46,7 +46,7 @@ class Block {
         }
 
         // 固定当前列表,防止期间新的区块进入列表
-        const currentList = this.list;
+        const currentList = [].concat(this.list);
         this.clearList();
         
         // 选择策略: 按records数量从高到低排序,取中间数
@@ -55,7 +55,7 @@ class Block {
         });
 
         // 如果最大records数量都为0,则抛弃所有区块
-        if(currentList[0].records.length === 0) {
+        if (currentList[0].records && currentList[0].records.length === 0) {
             console.log("max records.length 0, abandon!!!")
             return false;
         }
