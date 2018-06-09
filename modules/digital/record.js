@@ -34,6 +34,7 @@ class Record {
         const records = this.list.map((item) => {
             return item.record;
         })
+        this.cleanList()
         return records;
     }
 

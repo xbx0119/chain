@@ -110,6 +110,7 @@ class Peer {
 
         this.node.on('peer:connect', (peer) => {
             console.log("connection established to: ", peer.id.toB58String())
+            this.__addPeer(peer);
             // 打印连接的节点列表
             console.log(this.node.stats.peers())
         })
