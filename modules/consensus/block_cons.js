@@ -51,7 +51,7 @@ block_cons.fromNet.senateDeal = async function (peerid, block) {
 
     // 检查合法性
     const legal = digital.interface.toConsensus.block.checkSignatureThenHash(block);
-    if (!legal) { return false; }
+    // if (!legal) { return false; }
 
     // 1. 鉴定是否是执政官节点下达的
     const fromArchon = await digital.interface.toConsensus.peer.checkPeerType(peerid, 'archon');
