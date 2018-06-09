@@ -141,8 +141,6 @@ class Peer {
                 conn,
                 pull.map((m) => m.toString()),
                 pull.drain(function (data) {
-                    console.log(data)
-
                     consensus.interface.deliverDataFromNet(conn, protocol.slice(1), data)
                 })
             )

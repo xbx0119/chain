@@ -30,7 +30,7 @@ class Consensus {
                 const peerid = '';
 
                 if (peerinfo) {
-                    peerid = peerinfo.id.toB58String();
+                    peerid = await peerinfo.id.toB58String();
                     console.log(peerid)
                 } else {
                     throw "peerinfo get error"
