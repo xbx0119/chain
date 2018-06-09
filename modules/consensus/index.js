@@ -26,7 +26,7 @@ class Consensus {
             // 从网络层接收数据，处理后传递给数据层
             deliverDataFromNet: async function (conn, type, data) {
                 const peer_type = global.peerType;
-                const peerinfo = await promisify(conn.getPeerInfo)();
+                const peerinfo = (await promisify(conn.getPeerInfo))();
                 const peerid = '';
 
                 if (peerinfo) {
