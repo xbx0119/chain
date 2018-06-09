@@ -22,23 +22,23 @@ class Digital {
             // 对共识层提供的接口
             toConsensus: {
                 record: {
-                    checkSignatureThenHash: this.Record.checkSignatureThenHash,
-                    getListValue: this.Record.getListValue,
-                    addRecord2List: this.Record.addRecord2List,
-                    removeConfirmedRecordFromList: this.Record.removeConfirmedRecordFromList,
-                    isExistedInDB: this.Record.isExistedInDB,
-                    storeInDB: this.Record.storeInDB
+                    checkSignatureThenHash: this.Record.checkSignatureThenHash.bind(this.Record),
+                    getListValue: this.Record.getListValue.bind(this.Record),
+                    addRecord2List: this.Record.addRecord2List.bind(this.Record),
+                    removeConfirmedRecordFromList: this.Record.removeConfirmedRecordFromList.bind(this.Record),
+                    isExistedInDB: this.Record.isExistedInDB.bind(this.Record),
+                    storeInDB: this.Record.storeInDB.bind(this.Record)
                 },
 
                 block: {
-                    checkSignatureThenHash: this.Block.checkSignatureThenHash,
-                    addBlock2List: this.Block.addBlock2List,
-                    storeInDB: this.Block.storeInDB,
+                    checkSignatureThenHash: this.Block.checkSignatureThenHash.bind(this.Block),
+                    addBlock2List: this.Block.addBlock2List.bind(this.Block),
+                    storeInDB: this.Block.storeInDB.bind(this.Block),
                 },
 
                 peer: {
-                    getPeersByType: this.Peer.getPeersByType,
-                    checkPeerType: this.Peer.checkPeerType
+                    getPeersByType: this.Peer.getPeersByType.bind(this.Peer),
+                    checkPeerType: this.Peer.checkPeerType.bind(this.Peer)
                 }
             },
 
