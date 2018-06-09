@@ -61,7 +61,7 @@ block_cons.fromNet.senateDeal = async function (peerid, block) {
         const store = await digital.interface.toConsensus.block.storeInDB(block);
 
         const citizenPeer = await digital.interface.toConsensus.peer.getPeersByType('citizen');
-        network.interface.toConsensus.sendWhoTypeData(citizenPeer, 'block', block);
+        network.interface.toConsensus.sendWhoTypeData(citizenPeer, 'block', JSON.stringify(block));
         
         // 3. 提取区块中的交易信息，与record列表中的交易比对，排除已经进入区块的record
         if(store) {
@@ -78,7 +78,7 @@ block_cons.fromNet.senateDeal = async function (peerid, block) {
 // 公民节点接受来自元老院的block，鉴定后负责存储
 block_cons.fromNet.citizenDeal = async function (peerid, block) {
     block = (typeof block === 'object') ? block : JSON.parse(block);
-
+    console.log('citizenDeal')
     // 检查合法性
     const legal = digital.interface.toConsensus.block.checkSignatureThenHash(block);
     // if (!legal) { return false; }
@@ -91,7 +91,7 @@ block_cons.fromNet.citizenDeal = async function (peerid, block) {
         const store = await digital.interface.toConsensus.block.storeInDB(block);
 
         const citizenPeer = await digital.interface.toConsensus.peer.getPeersByType('citizen');
-        network.interface.toConsensus.sendWhoTypeData(citizenPeer, 'block', block);
+        network.interface.toConsensus.sendWhoTypeData(citizenPeer, 'block', JSON.stringify(block));
     }
 
 }
