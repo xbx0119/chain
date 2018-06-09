@@ -7,7 +7,6 @@ import crypto from 'libp2p-crypto';
 import jwkToPem from 'jwk-to-pem';
 import path from 'path';
 import fs from 'fs';
-import multiaddr from 'multiaddr';
 
 import config from '../../config';
 
@@ -159,9 +158,13 @@ class Peer {
     }
     
     async sendWhoTypeData(who, type, data) {
-        who.forEach((peer) => {
-            const addr = multiaddr(peer.multiaddr)
-            console.log(addr)
+        who.forEach((which) => {
+
+            const peer = new PeerInfo()
+
+            // TCP port 5001
+            peer.multiaddrs.add(which.multiaddr)
+
 
             this.node.dialProtocol(addr, '/' + type, async (err, conn) => {
                 if (err) {
@@ -169,12 +172,12 @@ class Peer {
                     // 拨号不通，节点异常，数据库删除节点
                     // const res = await digital.interface.toNet.removePeer(peer.peerid)
                     // if (res) console.log("节点异常，删除成功")
-                    console.log("节点异常: %s", peer.multiaddr)
+                    console.log("节点异常: %s", which.multiaddr)
 
                     // 若元老院节点或执政官节点异常,实行其他措施选举新节点,待实现!!!!!!!!!!!!!
                     // code
                 } else {
-                    console.log("dial %s & send data", peer.multiaddr)
+                    console.log("dial %s & send data", which.multiaddr)
                     this.sendData(conn, data);
                 }
             })
