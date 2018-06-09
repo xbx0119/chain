@@ -26,10 +26,10 @@ class Consensus {
             // 从网络层接收数据，处理后传递给数据层
             deliverDataFromNet: async function (conn, type, data) {
                 let peer_type = global.peerType;
-                let peerinfo = await (promisify(conn.getPeerInfo))();
+                // let peerinfo = await (promisify(conn.getPeerInfo))();
                 let peerid = '';
 
-                if (peerinfo) {
+                // if (peerinfo) {
                     // peerid = await peerinfo.id.toB58String();
                     if(type == 'record') {
                         peerid = 'QmcHUWf1YemBYrezctp6cSyZpSAANz2deFb9As3EMZnuXf'
@@ -38,9 +38,9 @@ class Consensus {
                         if (peer_type == 'archon') peerid = 'QmXPFDauH2KV2nJbETH6Mxh415ahubZCfq1FKDEbNEvJc8';
                         if (peer_type == 'senate') peerid = 'QmYhM1mnEqbnXpzChmUqfHUM8CfG2AopFp1TYMD4awBFrW'
                     }
-                } else {
-                    throw "peerinfo get error"
-                }
+                // } else {
+                    // throw "peerinfo get error"
+                // }
 
                 switch (type) {
                     case 'record':
