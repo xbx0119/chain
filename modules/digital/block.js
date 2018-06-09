@@ -46,23 +46,23 @@ class Block {
         }
 
         // 固定当前列表,防止期间新的区块进入列表
-        const currentList = [].concat(this.list);
+        let currentList = [].concat(this.list);
         this.clearList();
         
         // 选择策略: 按records数量从高到低排序,取中间数
         currentList.sort((a, b) => {
-            return b.records.length - a.records.length;
+            return JSON.parse(b.block).records.length - JSON.parse(a.block).records.length;
         });
 
         // 如果最大records数量都为0,则抛弃所有区块
-        if (currentList[0].records && currentList[0].records.length === 0) {
+        if (JSON.parse(currentList[0].block).records && JSON.parse(currentList[0].block).records.length === 0) {
             console.log("max records.length 0, abandon!!!")
             return false;
         }
 
         // 选择中间数
         const pos = Math.ceil(currentList.length / 2) - 1;
-        const block = currentList[pos];
+        const block = currentList[pos].block;
 
         const res = await this.storeInDB(block);
         if(res) {
