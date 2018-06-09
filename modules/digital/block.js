@@ -35,7 +35,6 @@ class Block {
         // 签名
         block.signature = this.__signature(block)
 
-        console.log(JSON.stringify(block))
         return block;
     } 
     

@@ -82,6 +82,7 @@ class Digital {
                     const block = await this.Block.produce();
                     // 如果区块中records长度为0,即交易列表为空,不像网络传送
                     if(block.records.length !== 0) {
+                        console.log(JSON.stringify(block))
                         Consensus.interface.deliverDataFromDigital('block', block);
                     }else {
                         console.log("senate: block.records.length = 0, after produce abandon toNet!")
