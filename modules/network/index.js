@@ -15,7 +15,7 @@ class Network {
 
             // 对上层 共识层 提供的接口
             toConsensus: {
-                sendWhoTypeData: this.peer.sendWhoTypeData
+                sendWhoTypeData: this.peer.sendWhoTypeData.bind(this.peer)
             }
 
         }

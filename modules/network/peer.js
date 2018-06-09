@@ -157,24 +157,22 @@ class Peer {
         // 数据库操作 存入multiaddr
         digital.interface.toNet.addPeer(peerid, multiaddr);
     }
-
-
     
     async sendWhoTypeData(who, type, data) {
-        let self = this;
+        console.log(who)
+        console.log(type)
         who.forEach((peer) => {
-            self.node.dialProtocol(peer.multiaddr, type, async (err, conn) => {
+            this.node.dialProtocol(peer.multiaddr, type, async (err, conn) => {
                 if (err) {
                     // 拨号不通，节点异常，数据库删除节点
                     // const res = await digital.interface.toNet.removePeer(peer.peerid)
-                    if (res) console.log("节点异常，删除成功")
+                    // if (res) console.log("节点异常，删除成功")
+                    console.log("节点异常: %s", peer.multiaddr)
 
                     // 若元老院节点或执政官节点异常,实行其他措施选举新节点,待实现!!!!!!!!!!!!!
                     // code
-
-
                 } else {
-                    console.log("dial %s", peer.multiaddr)
+                    console.log("dial %s & send data", peer.multiaddr)
                     this.sendData(conn, data);
                 }
             })

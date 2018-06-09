@@ -28,8 +28,6 @@ const config = {
     // 已知的节点列表
     peers: {
         list: [
-            '/ip4/149.28.15.233/tcp/9999/ipfs/QmYhM1mnEqbnXpzChmUqfHUM8CfG2AopFp1TYMD4awBFrW',
-            '/ip4/10.105.87.190/tcp/9999/ipfs/QmVbkvMswbUZbmRHbmBicg5sdzDYBnvGPC5PhZFnkozdoP'
         ]
     },
     
