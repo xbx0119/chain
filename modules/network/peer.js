@@ -166,7 +166,7 @@ class Peer {
             peer.multiaddrs.add(which.multiaddr)
 
 
-            this.node.dialProtocol(addr, '/' + type, async (err, conn) => {
+            this.node.dialProtocol(peer, '/' + type, async (err, conn) => {
                 if (err) {
                     console.log(err)
                     // 拨号不通，节点异常，数据库删除节点
