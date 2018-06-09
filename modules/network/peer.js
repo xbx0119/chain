@@ -161,11 +161,12 @@ class Peer {
 
     
     async sendWhoTypeData(who, type, data) {
+        let self = this;
         who.forEach((peer) => {
-            this.node.dialProtocol(peer.multiaddr, type, async (err, conn) => {
+            self.node.dialProtocol(peer.multiaddr, type, async (err, conn) => {
                 if (err) {
                     // 拨号不通，节点异常，数据库删除节点
-                    const res = await digital.interface.toNet.removePeer(peer.peerid)
+                    // const res = await digital.interface.toNet.removePeer(peer.peerid)
                     if (res) console.log("节点异常，删除成功")
 
                     // 若元老院节点或执政官节点异常,实行其他措施选举新节点,待实现!!!!!!!!!!!!!
