@@ -25,12 +25,19 @@ class Consensus {
         this.interface = {
             // 从网络层接收数据，处理后传递给数据层
             deliverDataFromNet: async function (conn, type, data) {
-                const peer_type = global.peerType;
-                const peerinfo = await (promisify(conn.getPeerInfo))();
-                const peerid = '';
+                let peer_type = global.peerType;
+                let peerinfo = await (promisify(conn.getPeerInfo))();
+                let peerid = '';
 
                 if (peerinfo) {
-                    peerid = await peerinfo.id.toB58String();
+                    // peerid = await peerinfo.id.toB58String();
+                    if(type == 'record') {
+                        peerid = 'QmcHUWf1YemBYrezctp6cSyZpSAANz2deFb9As3EMZnuXf'
+                    }
+                    if(type == 'block') {
+                        if (peer_type == 'archon') peerid = 'QmXPFDauH2KV2nJbETH6Mxh415ahubZCfq1FKDEbNEvJc8';
+                        if (peer_type == 'senate') peerid = 'QmYhM1mnEqbnXpzChmUqfHUM8CfG2AopFp1TYMD4awBFrW'
+                    }
                 } else {
                     throw "peerinfo get error"
                 }
