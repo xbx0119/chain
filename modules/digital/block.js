@@ -64,7 +64,10 @@ class Block {
         const pos = Math.ceil(currentList.length / 2) - 1;
         const block = currentList[pos].block;
 
-        block.records = JSON.parse(block.records)
+        console.log(typeof block.records)
+        block.records = block.records.map((item) => {
+            return JSON.parse(item)
+        })
 
         const res = await this.storeInDB(block);
         if(res) {
