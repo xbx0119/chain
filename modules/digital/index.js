@@ -51,7 +51,7 @@ class Digital {
             api: {
                 getBlocks: this.Block.getBlocks,
                 
-                getPeers: () => {},
+                getPeers: this.Peer.getPeers,
 
                 createRecord: async (message) => {
                     const record = await this.Record.produce(message);

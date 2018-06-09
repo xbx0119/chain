@@ -11,7 +11,8 @@ PeersModel.addPeer = async function(peerid, multiaddr) {
         // 添加
         const res = await Peers.create({ 
             peerid: peerid,
-            multiaddr: multiaddr
+            multiaddr: multiaddr,
+            type: 'citizen'
         });
         console.log("add: %s", res)
     }else {
@@ -27,6 +28,17 @@ PeersModel.removePeer = async function(peerid) {
     const res = await Peers.deleteOne({ peerid: peerid });
     if(res) return true;
     else return false;
+}
+
+PeersModel.getAllPeers = async function (page, size) {
+    page = +page || 1;
+    size = +size || 50;
+    const peers = await Peers.aggregate([
+        { $sort: { "_id": -1 } },
+        { $skip: (page - 1) * size },
+        { $limit: size }
+    ]);
+    return peers;
 }
 
 

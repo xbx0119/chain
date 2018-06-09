@@ -54,6 +54,16 @@ router.get('/api/getBlocks', async (ctx, next) => {
     const blocks = await digital.interface.api.getBlocks(page, size);
     ctx.body = blocks;
 });
+router.get('/api/getPeers', async (ctx, next) => {
+    const
+        page = ctx.request.query.page,
+        size = ctx.request.query.size;
+
+    const peers = await digital.interface.api.getPeers(page, size);
+    ctx.body = peers;
+});
+
+
 
 gui.use(router.routes(), router.allowedMethods())
 

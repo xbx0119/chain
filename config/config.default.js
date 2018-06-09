@@ -27,7 +27,9 @@ const config = {
 
     // 已知的节点列表
     peers: {
-        list: []
+        list: [
+            '/ip4/149.28.15.233/tcp/9999/ipfs/QmYhM1mnEqbnXpzChmUqfHUM8CfG2AopFp1TYMD4awBFrW'
+        ]
     },
     
     // 图形界面端口和地址

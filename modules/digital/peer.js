@@ -8,6 +8,11 @@ class Peer {
         console.log("digital peer constructor")
     }
 
+    async getPeers(page, size) {
+        const peers = await PeersModel.getAllPeers(page, size);
+        return peers;
+    }
+
     async addPeer(peerid, multiaddr) {
         const res = await PeersModel.addPeer(peerid, multiaddr)
         if(res) { return true; }

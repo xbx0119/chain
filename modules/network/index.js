@@ -26,6 +26,7 @@ class Network {
     async start() {
         await this.peer.start();
         console.log(colors.green("1. 网络层已启动"))
+        // 每一分钟获取其他节点的路由表
     }
 }
 
