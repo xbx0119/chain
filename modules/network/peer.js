@@ -7,6 +7,7 @@ import crypto from 'libp2p-crypto';
 import jwkToPem from 'jwk-to-pem';
 import path from 'path';
 import fs from 'fs';
+import multiaddr from 'multiaddr';
 
 import config from '../../config';
 
@@ -14,6 +15,7 @@ import digital from '../digital';
 import consensus from '../consensus';
 
 import { promisify } from 'es6-promisify';
+import { connect } from 'mongoose';
 
 
 class Peer {
@@ -159,11 +161,13 @@ class Peer {
     }
     
     async sendWhoTypeData(who, type, data) {
-        console.log(who)
-        console.log(type)
         who.forEach((peer) => {
-            this.node.dialProtocol(peer.multiaddr, type, async (err, conn) => {
+            const addr = multiaddr(peer.multiaddr)
+            console.log(addr)
+
+            this.node.dialProtocol(addr, '/' + type, async (err, conn) => {
                 if (err) {
+                    console.log(err)
                     // 拨号不通，节点异常，数据库删除节点
                     // const res = await digital.interface.toNet.removePeer(peer.peerid)
                     // if (res) console.log("节点异常，删除成功")
