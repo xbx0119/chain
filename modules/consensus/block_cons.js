@@ -27,7 +27,7 @@ block_cons.fromNet.archonDeal = async function(peerid, block) {
 
     // 检查合法性
     const legal = digital.interface.toConsensus.block.checkSignatureThenHash(block);
-    if (!legal) { return false; }
+    // if (!legal) { return false; }
 
     // 1. 验证发送人是否是元老院节点
     const fromSenate = await digital.interface.toConsensus.peer.checkPeerType(peerid, 'senate');
@@ -81,7 +81,7 @@ block_cons.fromNet.citizenDeal = async function (peerid, block) {
 
     // 检查合法性
     const legal = digital.interface.toConsensus.block.checkSignatureThenHash(block);
-    if (!legal) { return false; }
+    // if (!legal) { return false; }
 
     // 1. 鉴定是否是元老院公布的
     const fromSenate = await digital.interface.toConsensus.peer.checkPeerType(peerid, 'senate');
