@@ -67,6 +67,8 @@ block_cons.fromNet.senateDeal = async function (peerid, block) {
         }  
     }
 
+
+
 };
 
 // 公民节点收到元老院公布的决策区块
@@ -84,6 +86,9 @@ block_cons.fromNet.citizenDeal = async function (peerid, block) {
     if(fromSenate) {
         // 2. 存储进入数据库
         const store = await digital.interface.toConsensus.block.storeInDB(block);
+
+        const citizenPeer = await digital.interface.toConsensus.peer.getPeersByType('citizen');
+        network.interface.toConsensus.sendWhoTypeData(citizenPeer, 'block', block);
     }
 
 }
