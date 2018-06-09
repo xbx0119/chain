@@ -1,6 +1,7 @@
 import p2p from './p2p';
 import PeerInfo from 'peer-info';
 import PeerId from 'peer-id';
+import multiaddr from 'multiaddr';
 import pull from 'pull-stream';
 import waterfall from 'async/waterfall';
 import crypto from 'libp2p-crypto';
@@ -158,22 +159,16 @@ class Peer {
     }
     
     async sendWhoTypeData(who, type, data) {
+        
         who.forEach((which) => {
-
-            const peer = new PeerInfo()
-
-            // TCP port 5001
-            peer.multiaddrs.add(which.multiaddr)
-
-
-            this.node.dialProtocol(peer, '/' + type, async (err, conn) => {
+            this.node.dialProtocol(which.multiaddr, '/' + type, async (err, conn) => {
                 if (err) {
                     console.log(err)
                     // 拨号不通，节点异常，数据库删除节点
                     // const res = await digital.interface.toNet.removePeer(peer.peerid)
                     // if (res) console.log("节点异常，删除成功")
                     console.log("节点异常: %s", which.multiaddr)
-
+                    
                     // 若元老院节点或执政官节点异常,实行其他措施选举新节点,待实现!!!!!!!!!!!!!
                     // code
                 } else {
@@ -182,6 +177,26 @@ class Peer {
                 }
             })
         })
+        
+        // const findPeer = promisify(this.node.peerRouting.findPeer);
+        // for (let index = 0; index < who.length; index++) {
+        //     const which = who[index];
+
+        //     const peerid = PeerId.createFromB58String(which.peerid)
+        //     console.log(peerid);
+
+        //     // const peer = await findPeer(peerid)
+        //     // console.log(peer)
+
+        //     this.node.peerRouting.findPeer(peerid, (err, peer) => {
+                
+        //     })
+            
+
+
+            
+            
+        // }
     }
 
 }
